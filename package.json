@@ -1,0 +1,11 @@
+{
+  "name": "warmup",
+  "version": "1.0.0",
+  "description": "Wappuradio music player",
+  "main": "app.js",
+  "author": "Dregu",
+  "license": "MIT",
+  "dependencies": {
+    "mpd": "^1.3.0"
+  }
+}
