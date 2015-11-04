@@ -29,6 +29,11 @@ mpd.on('system-playlist', function() {
 		io.sockets.emit('playlistinfo', msg);
 	});
 });
+mpd.on('system-stored_playlist', function() {
+	mpd.sendCommand('listplaylists', function(err, msg) {
+		io.sockets.emit('listplaylists', msg);
+	});
+});
 
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/static'));
@@ -39,6 +44,7 @@ app.get('/', function(req, res,next) {
 io.on('connection', function(client) {
 	console.log('Client connected...');
 	client.on('cmd', function(data) {
+		console.log(data);
 		var cli = client;
 		var sent = data.split(' ')[0];
 		mpd.sendCommand(data, function(err, msg) {
