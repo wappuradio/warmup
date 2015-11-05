@@ -386,7 +386,7 @@ $(function () {
 		playlists[listname] = data.msg.toString();
 	});
 	setInterval(function () {
-		if (state.state == 'play' && queue.length > 0 && state.song != undefined && queue[state.song] != undefined) {
+		if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
 			elapsed += 0.1;
 			elapsed = Number(elapsed.toFixed(3));
 			$('.song-elapsed').html(formatTime(elapsed));
@@ -423,13 +423,22 @@ $(function () {
 	$(window).load(function () {
 		$('#queue-table').rowSorter({
 			onDrop: function (tbody, row, index, oldIndex) {
-				socket.emit('cmd', 'move ' + oldIndex + ' ' + index);
+				if (tbody.id == 'queue-body') {
+					socket.emit('cmd', 'move ' + oldIndex + ' ' + index);
+				} else if (tbody.id == 'custom-body') {
+					socket.emit('cmd', 'playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
+					socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+				}
 			}
 		});
 		$('#custom-table').rowSorter({
 			onDrop: function (tbody, row, index, oldIndex) {
-				socket.emit('cmd', 'playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
-				socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+				if (tbody.id == 'queue-body') {
+					socket.emit('cmd', 'move ' + oldIndex + ' ' + index);
+				} else if (tbody.id == 'custom-body') {
+					socket.emit('cmd', 'playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
+					socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+				}
 			}
 		});
 	});
