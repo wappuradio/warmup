@@ -11,32 +11,46 @@
 		<style>
 tr.cur td, #nowplaying { font-weight: bold; }
 tr.next td, #next { font-style: italic; }
-#player { height: 100px; }
-#timeleft {	position: absolute; top: 0; left: 50%; width: 200px; margin-left: -100px; font-size: 36px; font-weight: bold; text-align: 
-	center; }
+#timeleft {	position: absolute; top: -5px; left: 50%; width: 200px; margin-left: -100px; font-size: 36px; font-weight: bold; text-align: 
+	center; text-shadow: 0 0 2px white;}
 #playlist { height: 30px; }
+#sliderdiv { height: 18px; margin-top: 3px; }
+#slider { width: 100%; }
+.player-icon { height: 80px; margin-top: 5px; margin-right: 10px!important; position: absolute;}
+#playerdiv { height: 130px; }
+#player { display: none; }
+#nowplaying { margin-left: 100px; }
+#queue-body tr, #custom-body tr { cursor: move; }
+#search { font-size: 1.4em; line-height: 1.4em; }
+tr:hover, tr.sorting-row { background-color: #596069!important; }
 		</style>
 	</head>
 	<body style="margin-top: 40px">
 		<div id="timeleft"></div>
 		<div class="container">
-			<div id="player" style="margin-bottom: 15px">
-				<div id="next" class="pull-right">
-					Next: <span class="next-title"></span><br>
-					Artist: <span class="next-artist"></span><br>
-					Album: <span class="next-album"></span> (<span class="next-date"></span>)<br>
-					Time: <span class="next-time"></span>
+			<div class="panel panel-default" id="playerdiv">
+				<div id="player" class="panel-body">
+					<div id="next" class="pull-right">
+						Next: <span class="next-title"></span><br>
+						Artist: <span class="next-artist"></span><br>
+						Album: <span class="next-album"></span> (<span class="next-date"></span>)<br>
+						Time: <span class="next-time"></span>
+					</div>
+					<i class="player-icon fa fa-stop fa-5x fa-fw pull-left" data-state="stop"></i>
+					<!--i class="player-icon icon-play fa fa-play fa-5x fa-fw pull-left"></i>
+					<i class="player-icon icon-pause fa fa-pause fa-5x fa-fw pull-left"></i-->
+					<div id="nowplaying">
+						Title: <span class="song-title"></span><br>
+						Artist: <span class="song-artist"></span><br>
+						Album: <span class="song-album"></span> (<span class="song-date"></span>)<br>
+						Time: <span class="song-elapsed"></span> / <span class="song-time"></span><br>
+					</div>
+					<div id="sliderdiv">
+						<input type="range" id="slider" step="0.001" min="0">
+					</div>
 				</div>
-				<i class="player-icon fa fa-stop fa-5x fa-fw pull-left"></i>
-				<div id="nowplaying">
-					Title: <span class="song-title"></span><br>
-					Artist: <span class="song-artist"></span><br>
-					Album: <span class="song-album"></span> (<span class="song-date"></span>)<br>
-					Time: <span class="song-elapsed"></span> / <span class="song-time"></span><br>
-				</div>
-				<input type="range" id="slider" step="0.001" min="0" style="width: 100%">
 			</div>
-			<form class="form-inline" style="margin-bottom: 15px">
+			<form class="form-inline" style="margin-bottom: 20px">
 				<div class="btn-group" role="group" id="control-buttons" style="pull-left">
 					<button type="button" class="btn btn-default btn-lg" id="button-prev" data-cmd="previous"><i class="fa fa-step-backward"></i> Prev</button>
 					<button type="button" class="btn btn-default btn-lg" id="button-next" data-cmd="next"><i class="fa fa-step-forward"></i> Next</button>
@@ -44,14 +58,14 @@ tr.next td, #next { font-style: italic; }
 					<button type="button" class="btn btn-default btn-lg" id="button-play" data-cmd="pause"><i class="fa fa-play"></i> <span class="text">Play</span></button>
 				</div>
 				<div class="btn-group pull-right" role="group" id="setting-buttons">
-					<button type="button" class="btn btn-default btn-lg" id="button-random" data-cmd="random" data-toggle="button"><i class="fa fa-random"></i> Random</button>
+					<button type="button" class="btn btn-default btn-lg" id="button-single" data-cmd="single" data-toggle="button"><i class="fa fa-user-md"></i> Single</button>
 					<button type="button" class="btn btn-default btn-lg" id="button-consume" data-cmd="consume" data-toggle="button"><i class="fa fa-fire"></i> Consume</button>
-					<button type="button" class="btn btn-default btn-lg" id="button-single" data-cmd="single" data-toggle="button"><i class="fa fa-headphones"></i> Single</button>
+					<button type="button" class="btn btn-default btn-lg" id="button-random" data-cmd="random" data-toggle="button"><i class="fa fa-random"></i> Random</button>
 					<button type="button" class="btn btn-default btn-lg" id="button-repeat" data-cmd="repeat" data-toggle="button"><i class="fa fa-repeat"></i> Repeat</button>
 				</div>
 			</form>
-			<div style="margin-bottom: 15px">
-				<input type="text" class="form-control btn-lg" id="search" placeholder="Search" style="width: 100%">
+			<div style="margin-bottom: 20px">
+				<input type="text" class="form-control" id="search" placeholder="Search" style="width: 100%">
 			</div>
 			<ul class="nav nav-pills">
 				<li class="active"><a href="#queue" data-toggle="tab" id="tab-queue"><i class="fa fa-list-ol"></i> <span class="text">Play queue</span></a></li>
@@ -63,10 +77,11 @@ tr.next td, #next { font-style: italic; }
 			<div class="tab-content">
 				<div class="tab-pane active in" id="queue">
 					<div class="pull-right" style="margin-top: -32px">
-						<button class="btn btn-sm btn-primary" id="save"><i class="fa fa-save"></i> Save playlist</button>
+						<button class="btn btn-sm btn-info" id="save"><i class="fa fa-save"></i> Save queue as</button>
+						<button class="btn btn-sm btn-primary" id="shuffle"><i class="fa fa-random fa-rotate-90"></i> Shuffle queue</button>
 						<button class="btn btn-sm btn-danger" id="clear"><i class="fa fa-trash"></i> Clear queue</button>
 					</div>
-					<table class="table table-striped">
+					<table class="table table-striped" id="queue-table">
 						<thead>
 							<tr>
 								<th>#</th>
@@ -74,17 +89,17 @@ tr.next td, #next { font-style: italic; }
 								<th>Track</th>
 								<th>Artist</th>
 								<th>Album</th>
-								<th>Actions</th>
+								<th></th>
 							</tr>
 						</thead>
-						<tbody id="queue-body">
+						<tbody id="queue-body" data-callback="reorder()">
 						</tbody>
 					</table>
 				</div>
 				<div class="tab-pane" id="results">
 					<div class="pull-right form-inline" style="margin-top: -32px">
-						<input type="text" class="form-control" id="playlist" size="26" placeholder="Target playlist (default = queue)">
-						<button class="btn btn-sm btn-primary" id="addall"><i class="fa fa-plus"></i> Queue all</button>
+						<input type="text" class="form-control" id="playlist" size="26" placeholder="Add to list (default to queue)">
+						<button class="btn btn-sm btn-info" id="addall"><i class="fa fa-plus"></i> Queue all</button>
 					</div>
 					<table class="table table-striped">
 						<thead>
@@ -105,6 +120,7 @@ tr.next td, #next { font-style: italic; }
 							<tr>
 								<th>Artist</th>
 								<th>Album</th>
+								<th>Genre</th>
 								<th>Year</th>
 							</tr>
 						</thead>
@@ -119,7 +135,7 @@ tr.next td, #next { font-style: italic; }
 							<tr>
 								<th>Name</th>
 								<th>Modified</th>
-								<th>Actions</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody id="playlists-body">
@@ -131,7 +147,7 @@ tr.next td, #next { font-style: italic; }
 					<div class="pull-right" style="margin-top: -32px">
 						<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-trash"></i> Delete playlist</button>
 					</div>
-					<table class="table table-striped">
+					<table class="table table-striped" id="custom-table">
 						<thead>
 							<tr>
 								<th>#</th>
@@ -139,7 +155,7 @@ tr.next td, #next { font-style: italic; }
 								<th>Track</th>
 								<th>Artist</th>
 								<th>Album</th>
-								<th>Actions</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody id="custom-body">
@@ -151,7 +167,8 @@ tr.next td, #next { font-style: italic; }
 
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/jquery/dist/jquery.min.js"></script>
-		<script srC="/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="/jquery.rowsorter.js"></script>
 		<script src="/client.js"></script>
 	</body>
 </html>
