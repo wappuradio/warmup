@@ -167,8 +167,13 @@ $(function() {
 		$('#tab-results').html('Search results ('+results.length+')');
 	}
 	function formatTime(time) {
-		time = parseInt(time);
-		return parseInt(time/60)+':'+(time%60 < 10 ? '0'+time%60 : time%60);
+		var sec_num = parseInt(time, 10);
+		var hour = Math.floor(sec_num / 3600);
+		var min = Math.floor((sec_num - (hour * 3600)) / 60);
+		var sec = sec_num - (hour * 3600) - (min * 60);
+		if (hour > 0 && min < 10) { min = '0'+min; }
+		if (sec < 10) { sec = '0'+sec; }
+		return (hour > 0 ? hour+':':'')+min+':'+sec;
 	}
 	$('#control-buttons button').click(function() {
 		if ($(this).data('cmd') !== 'pause') {
@@ -332,7 +337,24 @@ $(function() {
 			elapsed += 0.1;
 			elapsed = Number(elapsed.toFixed(3));
 			$('.song-elapsed').html(formatTime(elapsed));
-			var left = queue[state['song']]['time']-elapsed;
+			var total = queue[state['song']]['time'];
+			if (state['consume'] == 0 && state['repeat'] == 1) {
+				$('#timeleft').html('Inf');
+				return;
+			} else if (state['single'] == 0 && state['random'] == 0 && state['repeat'] == 0) {
+				total = 0;
+				for (var i = state['song']; i < queue.length; i++) {
+					total += parseInt(queue[i]['time']);
+				}
+			} else if (state['single'] == 1 && state['repeat'] == 0) {
+				total = queue[state['song']]['time']
+			} else if (state['consume'] == 1 && state['random'] == 1) {
+				total = 0;
+				for (var i = 0; i < queue.length; i++) {
+					total += parseInt(queue[i]['time']);
+				}
+			}
+			var left = total-elapsed;
 			if(left > 60) {
 				$('#timeleft').html(formatTime(left));
 			} else {
@@ -341,8 +363,6 @@ $(function() {
 			if (!mousedown) {
 				$('#slider').val(elapsed);
 			}
-		} else {
-			$('#timeleft').html('');
 		}
 	}, 100);
 	$(window).load(function() {
