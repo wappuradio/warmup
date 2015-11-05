@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/bootstrap.min.css">
+		<link rel="stylesheet" href="/sortable/css/sortable-theme-bootstrap.css">
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body style="margin-top: 40px">
@@ -36,7 +37,7 @@
 				</div>
 			</div>
 			<form class="form-inline" style="margin-bottom: 20px">
-				<div class="btn-group" role="group" id="control-buttons" style="pull-left">
+				<div class="btn-group" role="group" id="control-buttons">
 					<button type="button" class="btn btn-default btn-lg" id="button-prev" data-cmd="previous"><i class="fa fa-step-backward"></i> Prev</button>
 					<button type="button" class="btn btn-default btn-lg" id="button-next" data-cmd="next"><i class="fa fa-step-forward"></i> Next</button>
 					<button type="button" class="btn btn-default btn-lg" id="button-stop" data-cmd="stop"><i class="fa fa-stop"></i> Stop</button>
@@ -52,7 +53,7 @@
 			<div style="margin-bottom: 20px">
 				<input type="text" class="form-control" id="search" placeholder="Search" style="width: 100%">
 			</div>
-			<ul class="nav nav-pills">
+			<ul class="nav nav-tabs" style="margin-bottom: -1px">
 				<li class="active"><a href="#queue" data-toggle="tab" id="tab-queue"><i class="fa fa-list-ol"></i> <span class="text">Play queue</span></a></li>
 				<li><a href="#results" data-toggle="tab" id="tab-results"><i class="fa fa-search"></i> <span class="text">Search results</span></a></li>
 				<li><a href="#albums" data-toggle="tab" id="tab-albums"><i class="fa fa-database"></i> <span class="text">All albums</span></a></li>
@@ -60,12 +61,14 @@
 				<li><a href="#custom" data-toggle="tab" id="tab-custom" style="display: none"><i class="fa fa-star"></i> <span class="text"></span></a></li>
 				<li><a href="#upload" data-toggle="tab" id="tab-upload"><i class="fa fa-upload"></i> <span class="text">Upload</span></a></li>
 			</ul>
+      <div class="panel panel-default" style="border-top-left-radius: 0">
+        <div class="panel-body">
 			<div class="tab-content">
 				<div class="tab-pane active in" id="queue">
-					<div class="pull-right" style="margin-top: -32px">
-						<button class="btn btn-sm btn-info" id="save"><i class="fa fa-save"></i> Save queue as</button>
-						<button class="btn btn-sm btn-primary" id="shuffle"><i class="fa fa-random fa-rotate-90"></i> Shuffle queue</button>
-						<button class="btn btn-sm btn-danger" id="clear"><i class="fa fa-trash"></i> Clear queue</button>
+					<div class="pull-right" style="margin-bottom: -32px">
+						<button class="btn btn-sm btn-info" id="save"><i class="fa fa-save"></i> Save</button>
+						<button class="btn btn-sm btn-primary" id="shuffle"><i class="fa fa-random fa-rotate-90"></i> Shuffle</button>
+						<button class="btn btn-sm btn-danger" id="clear"><i class="fa fa-trash"></i> Clear</button>
 					</div>
 					<table class="table table-striped" id="queue-table">
 						<thead>
@@ -83,11 +86,11 @@
 					</table>
 				</div>
 				<div class="tab-pane" id="results">
-					<div class="pull-right form-inline" style="margin-top: -32px">
-						<input type="text" class="form-control" id="playlist" size="26" placeholder="Add to list (default to queue)">
+					<div class="pull-right form-inline" style="margin-bottom: -32px">
+						<input type="text" class="form-control" id="playlist" size="10" placeholder="Add to list">
 						<button class="btn btn-sm btn-info" id="addall"><i class="fa fa-plus"></i> Queue all</button>
 					</div>
-					<table class="table table-striped">
+					<table class="table table-striped" data-sortable>
 						<thead>
 							<tr>
 								<th>Time</th>
@@ -101,7 +104,7 @@
 					</table>
 				</div>
 				<div class="tab-pane" id="albums">
-					<table class="table table-striped">
+					<table class="table table-striped" data-sortable>
 						<thead>
 							<tr>
 								<th>Artist</th>
@@ -116,7 +119,7 @@
 				</div>
 
 				<div class="tab-pane" id="playlists">
-					<table class="table table-striped">
+					<table class="table table-striped" data-sortable>
 						<thead>
 							<tr>
 								<th>Name</th>
@@ -130,7 +133,7 @@
 				</div>
 
 				<div class="tab-pane" id="custom">
-					<div class="pull-right" style="margin-top: -32px">
+					<div class="pull-right" style="margin-bottom: -32px">
 						<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-trash"></i> Delete playlist</button>
 					</div>
 					<table class="table table-striped" id="custom-table">
@@ -150,8 +153,6 @@
 				</div>
 
 				<div class="tab-pane" id="upload">
-      <div class="panel panel-default">
-        <div class="panel-body">
           <form action="" method="post" enctype="multipart/form-data" id="js-upload-form" style="display: none">
             <div class="form-inline">
               <div class="form-group">
@@ -161,23 +162,23 @@
             </div>
           </form>
           <div class="upload-drop-zone" id="drop-zone">
-            Just drag and drop files here (or click)
+            Drop your .flacs here (or click)
           </div>
 			<div id="progress" class="progress">
 			<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 			</div>
-          <div id="uploaded"></div>
-        </div>
-      </div>				
+          <div id="uploaded"></div>			
 				</div>
 
 			</div>
 		</div>
-
+        </div>
+      </div>		
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/jquery/dist/jquery.min.js"></script>
 		<script src="/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="/jquery.rowsorter.js"></script>
+		<script src="/sortable/js/sortable.min.js"></script>
 		<script src="/client.js"></script>
 	</body>
 </html>

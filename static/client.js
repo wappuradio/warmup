@@ -76,12 +76,14 @@ $(function() {
 		if (data !== undefined) {
 			queue = toArray(data, 'file');
 		}
+		if(queue === undefined) return;
 		$('#queue-body').html('');
 		for (var i in queue) {
 			var s = queue[i];
 			$('#queue-body').append('<tr><th>'+(1+1*s.pos)+' </th><td>'+formatTime(s.time)+' </td><td><a href="#" class="button-action" data-cmd="play '+s.pos+'"><i class="fa fa-play-circle"></i> '+s.title+'</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="'+s.artist+'"><i class="fa fa-fw fa-search"></i> '+s.artist+'</a> </td><td><a href="#" class="button-find" data-key="album" data-value="'+s.album+'"><i class="fa fa-fw fa-search"></i> '+s.album+'</a> </td><td><a href="#" class="button-action" data-cmd="delete '+s.pos+'"><i class="fa fa-trash fa-fw"></i></a></td></tr>');
 		}
 		$('#tab-queue .text').html('Play queue ('+queue.length+')');
+		updateState();
 	}
 	function updateState(data) {
 		if (data !== undefined) {
@@ -90,6 +92,9 @@ $(function() {
 			$('.song-elapsed').html(elapsed);
 			$('#slider').val(elapsed);
 		}
+		if(state === undefined) return;
+		$('body').removeClass();
+		$('body').addClass(state['state']);
 		$('#queue-body tr').removeClass('cur next');
 		if ($('.player-icon').data('state') != state['state']) {
 			$('.player-icon').animateRotate(0, 90, 300, function() {
@@ -113,7 +118,7 @@ $(function() {
 			}
 			$('.song-time').html(formatTime(queue[state['song']]['time']));
 			$('#slider').attr('max', queue[state['song']]['time']);
-			//$('#queue-body tr:nth-child('+(1+1*state['song'])+')').addClass('cur');
+			$('#queue-body tr:nth-child('+(1+1*state['song'])+')').addClass('cur');
 			if (state['nextsong'] !== undefined && queue.length > state['nextsong']) {
 				$('#next').fadeIn();
 				for (var i in queue[state['nextsong']]) {
@@ -122,7 +127,7 @@ $(function() {
 					}
 				}
 				$('.next-time').html(formatTime(queue[state['nextsong']]['time']));
-				//$('#queue-body tr:nth-child('+(1+1*state['nextsong'])+')').addClass('next');
+				$('#queue-body tr:nth-child('+(1+1*state['nextsong'])+')').addClass('next');
 			} else {
 				$('#next').fadeOut();
 			}
