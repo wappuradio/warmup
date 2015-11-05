@@ -319,6 +319,9 @@ $(function() {
 		updateResults(data);
 		$('#tab-results').click();
 	});
+	socket.on('upload', function(data) {
+		$('#uploaded').append('<div class="msg">'+data+'</div>');
+	});
 	setInterval(function() {
 		if (state['state'] == 'play' && queue.length > 0 && state['song'] != undefined && queue[state['song']] != undefined) {
 			elapsed += 0.1;
@@ -350,4 +353,62 @@ $(function() {
 			}
 		});
 	});
+
+    var dropZone = document.getElementById('drop-zone');
+    var uploadForm = document.getElementById('js-upload-form');
+    var startUpload = function(files) {
+	    var formData = new FormData();
+	    var n = 0;
+	    for (var file in files) {
+	    	if (files.hasOwnProperty(file)) {
+		    	if (files[file].type == 'audio/flac') {
+			        formData.append('files', files[file]);
+			        n++;
+			    } else {
+			    	$('#uploaded').append('<div class="msg">Not a flac</div>');
+			    }
+			}
+	    }
+	    if (n > 0) {
+		    var xhr = new XMLHttpRequest();
+		    xhr.upload.onprogress = function(e) {
+		    	var percent = Math.ceil((e.loaded / e.total) * 100);
+		    	$('#progress').addClass('active');
+		    	$('#progress .progress-bar').css('width',  percent+'%').attr('aria-valuenow', percent);
+		    }
+		    xhr.onload = function(e) {
+		    	$('#progress').removeClass('active');
+		    }
+		    xhr.open('POST', '/', true);
+		    xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+		    xhr.send(formData);
+		}
+    }
+    uploadForm.addEventListener('submit', function(e) {
+        var uploadFiles = document.getElementById('js-upload-files').files;
+        e.preventDefault()
+        startUpload(uploadFiles)
+    })
+    dropZone.ondrop = function(e) {
+        e.preventDefault();
+        this.className = 'upload-drop-zone';
+
+        startUpload(e.dataTransfer.files)
+    }
+    dropZone.ondragover = function() {
+        this.className = 'upload-drop-zone drop';
+        return false;
+    }
+    dropZone.ondragleave = function() {
+        this.className = 'upload-drop-zone';
+        return false;
+    }
+
+    $(dropZone).click(function() {
+    	$('#js-upload-files').click();
+    });
+    $('#js-upload-files').on('change', function() {
+    	var uploadFiles = document.getElementById('js-upload-files').files;
+    	startUpload(uploadFiles);
+    });
 });

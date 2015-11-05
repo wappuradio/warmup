@@ -8,22 +8,7 @@
 		<link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
 		<link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" href="/bootstrap.min.css">
-		<style>
-tr.cur td, #nowplaying { font-weight: bold; }
-tr.next td, #next { font-style: italic; }
-#timeleft {	position: absolute; top: -5px; left: 50%; width: 200px; margin-left: -100px; font-size: 36px; font-weight: bold; text-align: 
-	center; text-shadow: 0 0 2px white;}
-#playlist { height: 30px; }
-#sliderdiv { height: 18px; margin-top: 3px; }
-#slider { width: 100%; }
-.player-icon { height: 80px; margin-top: 5px; margin-right: 10px!important; position: absolute;}
-#playerdiv { height: 130px; }
-#player { display: none; }
-#nowplaying { margin-left: 100px; }
-#queue-body tr, #custom-body tr { cursor: move; }
-#search { font-size: 1.4em; line-height: 1.4em; }
-tr:hover, tr.sorting-row { background-color: #596069!important; }
-		</style>
+		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body style="margin-top: 40px">
 		<div id="timeleft"></div>
@@ -73,6 +58,7 @@ tr:hover, tr.sorting-row { background-color: #596069!important; }
 				<li><a href="#albums" data-toggle="tab" id="tab-albums"><i class="fa fa-database"></i> <span class="text">All albums</span></a></li>
 				<li><a href="#playlists" data-toggle="tab" id="tab-playlists"><i class="fa fa-folder-open"></i> <span class="text">Saved playlists</span></a></li>
 				<li><a href="#custom" data-toggle="tab" id="tab-custom" style="display: none"><i class="fa fa-star"></i> <span class="text"></span></a></li>
+				<li><a href="#upload" data-toggle="tab" id="tab-upload"><i class="fa fa-upload"></i> <span class="text">Upload</span></a></li>
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active in" id="queue">
@@ -162,6 +148,29 @@ tr:hover, tr.sorting-row { background-color: #596069!important; }
 						</tbody>
 					</table>
 				</div>
+
+				<div class="tab-pane" id="upload">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <form action="" method="post" enctype="multipart/form-data" id="js-upload-form" style="display: none">
+            <div class="form-inline">
+              <div class="form-group">
+                <input type="file" name="files" id="js-upload-files" accept="audio/flac" multiple>
+              </div>
+              <button type="submit" class="btn btn-sm btn-primary" id="js-upload-submit">Upload files</button>
+            </div>
+          </form>
+          <div class="upload-drop-zone" id="drop-zone">
+            Just drag and drop files here (or click)
+          </div>
+			<div id="progress" class="progress">
+			<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+			</div>
+          <div id="uploaded"></div>
+        </div>
+      </div>				
+				</div>
+
 			</div>
 		</div>
 
