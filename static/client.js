@@ -50,7 +50,7 @@ $(function() {
 			var s = albums[i];
 			$('#albums-body').append('<tr><td><a href="#" class="button-find" data-key="artist" data-value="'+s.artist+'"><i class="fa fa-fw fa-search"></i> '+s.artist+'</a> </td><td><a href="#" class="button-find" data-key="album" data-value="'+s.album+'"><i class="fa fa-fw fa-search"></i> '+s.album+'</a> </td><td><a href="#" class="button-find" data-key="genre" data-value="'+s.genre+'"><i class="fa fa-fw fa-search"></i> '+s.genre+'</a> </td><td><a href="#" class="button-find" data-key="date" data-value="'+s.date+'"><i class="fa fa-fw fa-search"></i> '+s.date+'</a> </td></tr>');
 		}
-		$('#tab-albums .text').html('All albums ('+albums.length+')');
+		$('#tab-albums .text').html('Database ('+albums.length+')');
 	}
 	function updatePlaylists(data) {
 		var lists = toArray(data, 'playlist');
@@ -164,7 +164,7 @@ $(function() {
 			var s = results[i];
 			$('#results-body').append('<tr><td>'+formatTime(s.time)+' </td><td><a href="#" class="button-add" data-id="'+i+'"><i class="fa fa-fw fa-plus-circle"></i> '+s.title+'</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="'+s.artist+'"><i class="fa fa-fw fa-search"></i> '+s.artist+'</a> </td><td><a href="#" class="button-find" data-key="album" data-value="'+s.album+'"><i class="fa fa-fw fa-search"></i> '+s.album+'</a> </td></tr>');
 		}
-		$('#tab-results').html('Search results ('+results.length+')');
+		$('#tab-results .text').html('Search results ('+results.length+')');
 	}
 	function formatTime(time) {
 		var sec_num = parseInt(time, 10);

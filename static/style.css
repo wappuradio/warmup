@@ -57,10 +57,10 @@ tbody tr:hover, tbody tr.sorting-row { background-color: #596069!important; }
 	width: 25%;
 }
 #control-buttons {
-	padding-right: 50px;
+	padding-right: 70px;
 }
 #setting-buttons {
-	padding-left: 50px;
+	padding-left: 70px;
 	margin-right: -3px;
 }
 @keyframes curPulse {
