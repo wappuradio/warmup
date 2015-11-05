@@ -290,6 +290,9 @@ $(function () {
 	$('#shuffle').click(function () {
 		socket.emit('cmd', 'shuffle');
 	});
+	$('#queueall').click(function () {
+		socket.emit('cmd', 'load "' + custom + '"');
+	});
 	$('#clear').click(function () {
 		socket.emit('cmd', 'clear');
 	});
