@@ -1,35 +1,99 @@
-#nowplaying { font-weight: bold; }
-#next { font-style: italic; }
-#timeleft {	position: absolute; top: 170px; left: 50%; width: 200px; margin-left: -100px; font-size: 36px; font-weight: bold; text-align: 
-	center; text-shadow: 0 0 3px white; color: white;}
-#playlist { height: 31px; }
-#sliderdiv { height: 18px; margin-top: 3px; }
-#slider { width: 100%; }
-.player-icon { height: 80px; margin-top: 5px; margin-right: 10px!important; position: absolute;}
+#nowplaying {
+	font-weight: bold;
+}
+
+#next {
+	font-style: italic;
+}
+
+#timeleft {
+	position: absolute;
+	top: 170px;
+	left: 50%;
+	width: 200px;
+	margin-left: -100px;
+	font-size: 36px;
+	font-weight: bold;
+	text-align: center;
+	text-shadow: 0 0 3px white;
+	color: white;
+}
+
+#playlist {
+	height: 31px;
+}
+
+#sliderdiv {
+	height: 18px;
+	margin-top: 3px;
+}
+
+#slider {
+	width: 100%;
+}
+
+.player-icon {
+	height: 80px;
+	margin-top: 5px;
+	margin-right: 10px!important;
+	position: absolute;
+}
+
 .player-icon.fa-play {
 	color: white;
 	animation: playPulse 1s infinite alternate;
 }
-#playerdiv { height: 130px; }
-#player { display: none; white-space: nowrap; }
-#nowplaying { margin-left: 100px; color: white; }
-#queue-body tr, #custom-body tr { cursor: move; }
-#search { font-size: 1.4em; line-height: 1.4em; }
-table[data-sortable] th:after { position: absolute; }
-#results th, #albums th, #playlists th { cursor: pointer; }
-tbody tr:hover, tbody tr.sorting-row { background-color: #596069!important; }
+
+#playerdiv {
+	height: 130px;
+}
+
+#player {
+	display: none;
+	white-space: nowrap;
+}
+
+#nowplaying {
+	margin-left: 100px;
+	color: white;
+}
+
+#queue-body tr, #custom-body tr {
+	cursor: move;
+}
+
+#search {
+	font-size: 1.4em;
+	line-height: 1.4em;
+}
+
+table[data-sortable] th:after {
+	position: absolute;
+}
+
+#results th, #albums th, #playlists th {
+	cursor: pointer;
+}
+
+tbody tr:hover, tbody tr.sorting-row {
+	background-color: #596069!important;
+}
+
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
 	background: linear-gradient(180deg, #3e444c 0%, #3e444c 00%, #2e3338 100%);
 	border-bottom-color: #2e3338;
 }
+
 .nav-tabs>li>a:hover, .nav-tabs>li>a:focus {
 	background: linear-gradient(180deg, #3e444c 0%, #3e444c 00%, #2e3338 100%);
 }
+
 .upload-drop-zone {
-  height: 200px;
-  border-width: 2px;
-  margin-bottom: 20px;
+	height: 200px;
+	border-width: 2px;
+	margin-bottom: 20px;
 }
+
 @media (max-width: 1200px) {
 	#setting-buttons .btn-lg, #control-buttons .btn-lg {
 		font-size: 0;
@@ -39,47 +103,76 @@ tbody tr:hover, tbody tr.sorting-row { background-color: #596069!important; }
 	}
 }
 /* skin.css Style*/
+
 .upload-drop-zone {
-  color: #ccc;
-  border-style: dashed;
-  border-color: #ccc;
-  line-height: 200px;
-  text-align: center
+	color: #ccc;
+	border-style: dashed;
+	border-color: #ccc;
+	line-height: 200px;
+	text-align: center
 }
+
 .upload-drop-zone.drop {
-  color: #222;
-  border-color: #222;
+	color: #222;
+	border-color: #222;
 }
+
 .btn-group {
 	width: 50%;
 }
+
 .btn-group .btn {
 	width: 25%;
 }
+
 #control-buttons {
 	padding-right: 70px;
 }
+
 #setting-buttons {
 	padding-left: 70px;
 	margin-right: -3px;
 }
+
 @keyframes curPulse {
-	0% { background-color: rgba(0,0,0,0); }
-	100% { background-color: rgba(70,180,255,0.2); }
+	0% {
+		background-color: rgba(0, 0, 0, 0);
+	}
+	100% {
+		background-color: rgba(70, 180, 255, 0.2);
+	}
 }
+
 @keyframes playPulse {
-	0% { color: rgba(255,255,255,1); }
-	100% { color: rgba(70,180,255,1); }
+	0% {
+		color: rgba(255, 255, 255, 1);
+	}
+	100% {
+		color: rgba(70, 180, 255, 1);
+	}
 }
+
 tr.cur td, tr.cur th {
 	font-weight: bold;
-	background-color: rgba(70,180,255,0.1);
+	background-color: rgba(70, 180, 255, 0.1);
 }
+
 .play tr.cur td, .play tr.cur th {
 	font-weight: bold;
-	background-color: rgba(70,180,255,0.2);
+	background-color: rgba(70, 180, 255, 0.2);
 	animation: curPulse 1s infinite alternate;
 }
+
 tr.next td, tr.next th {
-	background-color: rgba(250,100,60,0.08);
+	background-color: rgba(250, 100, 60, 0.08);
+}
+
+.tag {
+	background-color: #fc3;
+	float: right;
+	border: 1px solid black;
+	border-radius: 3px;
+	color: black;
+	padding: 0 2px;
+	margin-left: -200px;
 }
