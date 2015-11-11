@@ -20,7 +20,7 @@ $.fn.animateRotate = function (start, angle, duration, complete) {
 };
 
 $(function () {
-	var socket = io.connect('http://84.249.172.31:5353'),
+	var socket = io.connect(window.location.href),
 		state = {},
 		queue = [],
 		results = [],
