@@ -54,7 +54,7 @@
 			</div>
 		</form>
 		<div style="margin-bottom: 20px">
-			<input type="text" class="form-control" id="search" placeholder="Search" style="width: 100%">
+			<input type="text" class="form-control" id="search" placeholder='Search anything or specify eg. artist "Apulanta"' style="width: 100%">
 		</div>
 		<ul class="nav nav-tabs" style="margin-bottom: -1px">
 			<li class="active"><a href="#queue" data-toggle="tab" id="tab-queue"><i class="fa fa-list-ol"></i> <span class="text">Play queue</span></a></li>
@@ -62,7 +62,7 @@
 			<li><a href="#albums" data-toggle="tab" id="tab-albums"><i class="fa fa-database"></i> <span class="text">Database</span></a></li>
 			<li><a href="#playlists" data-toggle="tab" id="tab-playlists"><i class="fa fa-folder-open"></i> <span class="text">Saved playlists</span></a></li>
 			<li><a href="#custom" data-toggle="tab" id="tab-custom" style="display: none"><i class="fa fa-star"></i> <span class="text"></span></a></li>
-			<li><a href="#upload" data-toggle="tab" id="tab-upload"><i class="fa fa-upload"></i> <span class="text">Upload</span></a></li>
+			<!--li><a href="#upload" data-toggle="tab" id="tab-upload"><i class="fa fa-upload"></i> <span class="text">Upload</span></a></li-->
 		</ul>
 		<div class="panel panel-default" style="border-top-left-radius: 0">
 			<div class="panel-body">
@@ -96,6 +96,7 @@
 						<table class="table table-striped" data-sortable>
 							<thead>
 								<tr>
+									<th>#</th>
 									<th>Time</th>
 									<th>Track</th>
 									<th>Artist</th>
@@ -153,7 +154,7 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="tab-pane" id="upload">
+					<!--div class="tab-pane" id="upload">
 						<form action="" method="post" enctype="multipart/form-data" id="js-upload-form" style="display: none">
 							<div class="form-inline">
 								<div class="form-group">
@@ -169,7 +170,7 @@
 							<div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
 						</div>
 						<div id="uploaded"></div>
-					</div>
+					</div-->
 				</div>
 			</div>
 		</div>

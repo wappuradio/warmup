@@ -13,11 +13,25 @@ var upload = multer({
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var sanitize = require('sanitize-filename');
-var mpd = Mpd.connect({
+var mpd, recon;
+
+mpd = Mpd.connect({
 	host: 'localhost',
 	port: 6600
 });
+mpd.on('end', function () {
+	recon = setInterval(function () {
+		console.log('MPD reconnecting');
+		connect();
+	}, 5000);
+	console.log('MPD disconnected');
+});
+mpd.on('connect', function () {
+	clearInterval(recon);
+	console.log('MPD connected');
+});
 mpd.on('ready', function () {
+	clearInterval(recon);
 	console.log('MPD ready');
 });
 mpd.on('system-player', function () {
@@ -52,6 +66,7 @@ mpd.on('system-stored_playlist', function () {
 		});
 	});
 });
+
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/static'));
 app.get('/', function (req, res, next) {

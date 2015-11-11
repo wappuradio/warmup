@@ -101,7 +101,11 @@ tbody tr:hover, tbody tr.sorting-row {
 	#setting-buttons .btn-lg i, #control-buttons .btn-lg i {
 		font-size: 18px;
 	}
+	#next {
+		opacity: 0;
+	}
 }
+
 /* skin.css Style*/
 
 .upload-drop-zone {

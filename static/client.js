@@ -20,7 +20,7 @@ $.fn.animateRotate = function (start, angle, duration, complete) {
 };
 
 $(function () {
-	var socket = io.connect('http://localhost:5353'),
+	var socket = io.connect('http://84.249.172.31:5353'),
 		state = {},
 		queue = [],
 		results = [],
@@ -31,6 +31,10 @@ $(function () {
 		custom = '',
 		customlist = [],
 		playlists = [];
+
+	function escapeRegExp(str) {
+		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+	}
 
 	function toObject(data) {
 		var out = {};
@@ -189,7 +193,7 @@ $(function () {
 			var s = results[i];
 			var tag = '';
 			for (var j in playlists) {
-				var reg = new RegExp(s.file, 'gm')
+				var reg = new RegExp(escapeRegExp(s.file), 'gm')
 				if (playlists[j].match(reg)) {
 					tag += j + ' ';
 				}
@@ -197,7 +201,7 @@ $(function () {
 			if (tag !== '') {
 				tag = '<div class="tag">' + tag + '</div>';
 			}
-			$('#results-body').append('<tr><td>' + formatTime(s.time) + ' </td><td>' + tag + '<a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td></tr>');
+			$('#results-body').append('<tr><td>' + (1*i+1) + '</td><td>' + formatTime(s.time) + ' </td><td>' + tag + '<a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td></tr>');
 		}
 		$('#tab-results .text').html('Search results (' + results.length + ')');
 	}
@@ -392,6 +396,9 @@ $(function () {
 		if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
 			elapsed += 0.1;
 			elapsed = Number(elapsed.toFixed(3));
+			if (!mousedown) {
+				$('#slider').val(elapsed);
+			}
 			$('.song-elapsed').html(formatTime(elapsed));
 			var total = queue[parseInt(state.song)].time;
 			if (state.consume == '0' && state.repeat == '1') {
@@ -415,9 +422,6 @@ $(function () {
 				$('#timeleft').html(formatTime(left));
 			} else {
 				$('#timeleft').html(left.toFixed(1));
-			}
-			if (!mousedown) {
-				$('#slider').val(elapsed);
 			}
 		} else {
 			$('#timeleft').html('');
@@ -445,7 +449,7 @@ $(function () {
 			}
 		});
 	});
-
+	/*
 	var dropZone = document.getElementById('drop-zone');
 	var uploadForm = document.getElementById('js-upload-form');
 	var startUpload = function (files) {
@@ -480,7 +484,7 @@ $(function () {
 		var uploadFiles = document.getElementById('js-upload-files').files;
 		e.preventDefault()
 		startUpload(uploadFiles)
-	})
+	});
 	dropZone.ondrop = function (e) {
 		e.preventDefault();
 		this.className = 'upload-drop-zone';
@@ -502,4 +506,5 @@ $(function () {
 		var uploadFiles = document.getElementById('js-upload-files').files;
 		startUpload(uploadFiles);
 	});
+	*/
 });
