@@ -18,7 +18,6 @@ $.fn.animateRotate = function (start, angle, duration, complete) {
 		});
 	});
 };
-
 $(function () {
 	var socket = io.connect(window.location.href),
 		state = {},
