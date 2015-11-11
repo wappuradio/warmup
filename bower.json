@@ -1,6 +1,6 @@
 {
   "name": "warmup",
-  "description": "Wappuradio musaplayer",
+  "description": "Wappuradio music player",
   "main": "app.js",
   "authors": [
     "Dregu"

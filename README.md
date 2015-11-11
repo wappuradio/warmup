@@ -4,6 +4,6 @@ Best MPD client.
 ```
 npm install
 bower install
+nano config.js.example
 node app.js
 ```
-
