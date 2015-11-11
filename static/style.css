@@ -4,6 +4,9 @@
 
 #next {
 	font-style: italic;
+	max-width: 33%;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 #timeleft {
@@ -168,6 +171,7 @@ tr.cur td, tr.cur th {
 }
 
 tr.next td, tr.next th {
+	font-style: italic;
 	background-color: rgba(250, 100, 60, 0.08);
 }
 

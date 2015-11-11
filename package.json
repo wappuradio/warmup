@@ -7,6 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/Dregu/warmup",
   "dependencies": {
+    "basic-auth": "^1.0.3",
     "express": "^4.13.3",
     "flac-parser": "^0.3.1",
     "mkdirp": "^0.5.1",

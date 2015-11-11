@@ -1,3 +1,10 @@
+try {
+	require.resolve('./config');
+} catch(e) {
+	console.log('config.js is missing, check config.js.example');
+	process.exit();
+}
+var config = require('./config');
 var DB_PATH = 'uploads';
 
 var express = require('express');
@@ -13,11 +20,12 @@ var upload = multer({
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var sanitize = require('sanitize-filename');
+var basicAuth = require('basic-auth');
 var mpd, recon;
 
 mpd = Mpd.connect({
-	host: 'localhost',
-	port: 6600
+	host: config.mpd_host,
+	port: config.mpd_port
 });
 mpd.on('end', function () {
 	recon = setInterval(function () {
@@ -67,9 +75,32 @@ mpd.on('system-stored_playlist', function () {
 	});
 });
 
+var auth = function (req, res, next) {
+  if(config.http_user == '' && config.http_pass == '') {
+    return next();
+  }
+
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+    return res.sendStatus(401);
+  };
+
+  var user = basicAuth(req);
+
+  if (!user || !user.name || !user.pass) {
+    return unauthorized(res);
+  };
+
+  if (user.name === config.http_user && user.pass === config.http_pass) {
+    return next();
+  } else {
+    return unauthorized(res);
+  };
+};
+
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/static'));
-app.get('/', function (req, res, next) {
+app.get('/', auth, function (req, res, next) {
 	res.sendFile(__dirname + '/index.html');
 });
 
@@ -149,7 +180,7 @@ function moveFile(file) {
 		}
 	})
 };
-app.post('/', upload.array('files'), function (req, res, next) {
+app.post('/', auth, upload.array('files'), function (req, res, next) {
 	for (var i in req.files) {
 		moveFile(req.files[i]);
 	}
@@ -170,4 +201,4 @@ io.on('connection', function (client) {
 		});
 	});
 });
-server.listen(5353);
+server.listen(config.http_port);

@@ -30,7 +30,17 @@ $(function () {
 		mousedown = false,
 		custom = '',
 		customlist = [],
-		playlists = [];
+		playlists = [],
+		locked = true;
+
+	function exec(line) {
+		if(locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save)$/gm)) {
+			console.log('Blocked: '+line);
+			return;
+		}
+		console.log('cmd: '+line);
+		socket.emit('cmd', line);
+	}
 
 	function escapeRegExp(str) {
 		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -82,7 +92,7 @@ $(function () {
 		$('#playlists-body').html('');
 		for (var i in lists) {
 			var s = lists[i];
-			socket.emit('cmd', 'listplaylist "' + s.playlist + '"')
+			exec('listplaylist "' + s.playlist + '"');
 			$('#playlists-body').append('<tr><td><a href="#" class="button-edit-list" data-name="' + s.playlist + '"><i class="fa fa-fw fa-pencil"></i> ' + s.playlist + ' </td><td>' + s['last-modified'] + '</td><td><a href="#" class="button-queue-list" data-name="' + s.playlist + '"><i class="fa fa-fw fa-plus-circle"></i> Queue all</a></td></tr>');
 		}
 		$('#tab-playlists .text').html('Saved playlists (' + lists.length + ')');
@@ -221,60 +231,60 @@ $(function () {
 	}
 	$('#control-buttons button').click(function () {
 		if ($(this).data('cmd') !== 'pause') {
-			socket.emit('cmd', $(this).data('cmd'));
+			exec($(this).data('cmd'));
 		} else {
 			switch (state.state) {
 			case 'stop':
-				socket.emit('cmd', 'play');
+				exec('play');
 				break;
 			case 'pause':
-				socket.emit('cmd', 'pause 0');
+				exec('pause 0');
 				break;
 			case 'play':
-				socket.emit('cmd', 'pause 1');
+				exec('pause 1');
 				break;
 			default:
 			}
 		}
 	});
 	$('#setting-buttons button').click(function () {
-		socket.emit('cmd', $(this).data('cmd') + ' ' + ($(this).hasClass('active') ? '0' : '1'));
+		exec($(this).data('cmd') + ' ' + ($(this).hasClass('active') ? '0' : '1'));
 	});
 	$('#queue-body, #results-body, #albums-body, #playlists-body').on('click', '.button-action', function (e) {
 		e.preventDefault();
-		socket.emit('cmd', $(this).data('cmd'));
+		exec($(this).data('cmd'));
 	});
 	$('#custom-body').on('click', '.button-action', function (e) {
 		e.preventDefault();
-		socket.emit('cmd', $(this).data('cmd'));
-		socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+		exec($(this).data('cmd'));
+		exec('listplaylistinfo "' + custom + '"');
 	});
 	$('#results-body').on('click', '.button-add', function (e) {
 		e.preventDefault();
 		if ($('#playlist').val() === '') {
-			socket.emit('cmd', 'findadd file "' + results[$(this).data('id')]['file'] + '"');
+			exec('findadd file "' + results[$(this).data('id')]['file'] + '"');
 		} else {
-			socket.emit('cmd', 'playlistadd "' + $('#playlist').val() + '" "' + results[$(this).data('id')]['file'] + '"');
+			exec('playlistadd "' + $('#playlist').val() + '" "' + results[$(this).data('id')]['file'] + '"');
 		}
 	});
 	$('#custom-body').on('click', '.button-add', function (e) {
 		e.preventDefault();
-		socket.emit('cmd', 'findadd file "' + customlist[$(this).data('id')]['file'] + '"');
+		exec('findadd file "' + customlist[$(this).data('id')]['file'] + '"');
 	});
 	$('#queue-body, #results-body, #albums-body, #custom-body').on('click', '.button-find', function (e) {
 		e.preventDefault();
 		var key = $(this).data('key');
 		var value = $(this).data('value');
 		var search = 'find ' + key + ' "' + value + '"';
-		socket.emit('cmd', search);
+		exec(search);
 		$('#search').val(key + ' "' + value + '"');
 		lastsearch = search;
 	});
 	$('#playlists-body').on('click', '.button-queue-list', function (e) {
 		e.preventDefault();
-		socket.emit('cmd', 'load "' + $(this).data('name') + '"');
-		socket.emit('cmd', 'status');
-		socket.emit('cmd', 'playlistinfo');
+		exec('load "' + $(this).data('name') + '"');
+		exec('status');
+		exec('playlistinfo');
 	});
 	$('#playlists-body').on('click', '.button-edit-list', function (e) {
 		e.preventDefault();
@@ -282,34 +292,34 @@ $(function () {
 		$('#tab-custom .text').html(custom);
 		$('#tab-custom').show().click();
 		if (custom !== '') {
-			socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+			exec('listplaylistinfo "' + custom + '"');
 		}
 	});
 	$('#save').click(function () {
 		var name = prompt('Save playlist as');
 		if (name) {
-			socket.emit('cmd', 'save "' + name + '"');
+			exec('save "' + name + '"');
 		}
 	});
 	$('#shuffle').click(function () {
-		socket.emit('cmd', 'shuffle');
+		exec('shuffle');
 	});
 	$('#queueall').click(function () {
-		socket.emit('cmd', 'load "' + custom + '"');
+		exec('load "' + custom + '"');
 	});
 	$('#clear').click(function () {
-		socket.emit('cmd', 'clear');
+		exec('clear');
 	});
 	$('#delete').click(function () {
 		if (custom !== '') {
-			socket.emit('cmd', 'rm "' + custom + '"');
+			exec('rm "' + custom + '"');
 		}
 		$('#tab-playlists').click();
 		$('#tab-custom').hide();
 	});
 	$('#addall').click(function () {
 		var addcmd = lastsearch.replace(/^find/, 'findadd').replace(/^search/, 'searchadd');
-		socket.emit('cmd', addcmd);
+		exec(addcmd);
 	});
 	$(document).keydown(function (e) {
 		if (!$(e.target).is('input')) {
@@ -319,10 +329,10 @@ $(function () {
 		if (e.which == 13) {
 			e.preventDefault();
 			if (str.match(/^.+ ".+"$/)) {
-				socket.emit('cmd', 'find ' + str);
+				exec('find ' + str);
 				lastsearch = 'find ' + str;
 			} else {
-				socket.emit('cmd', 'search any "' + str + '"');
+				exec('search any "' + str + '"');
 				lastsearch = 'search any "' + str + '"';
 			}
 		} else if (e.which == 27) {
@@ -337,16 +347,16 @@ $(function () {
 		mousedown = false;
 	});
 	$(window).focus(function () {
-		socket.emit('cmd', 'status');
+		exec('status');
 	});
 	$('#slider').mouseup(function () {
-		socket.emit('cmd', 'seekcur ' + $(this).val());
+		exec('seekcur ' + $(this).val());
 	});
 	socket.on('connect', function (data) {
-		socket.emit('cmd', 'status');
-		socket.emit('cmd', 'playlistinfo');
-		socket.emit('cmd', 'list artist group album group date group genre');
-		socket.emit('cmd', 'listplaylists');
+		exec('status');
+		exec('playlistinfo');
+		exec('list artist group album group date group genre');
+		exec('listplaylists');
 	});
 	socket.on('status', function (data) {
 		console.log('got status');
@@ -366,7 +376,7 @@ $(function () {
 		console.log('got playlists');
 		updatePlaylists(data.msg.toString());
 		if (custom !== '') {
-			socket.emit('listplaylistinfo "' + custom + '"');
+			exec('listplaylistinfo "' + custom + '"');
 		}
 	});
 	socket.on('listplaylistinfo', function (data) {
@@ -431,24 +441,33 @@ $(function () {
 		$('#queue-table').rowSorter({
 			onDrop: function (tbody, row, index, oldIndex) {
 				if (tbody.id == 'queue-body') {
-					socket.emit('cmd', 'move ' + oldIndex + ' ' + index);
+					exec('move ' + oldIndex + ' ' + index);
 				} else if (tbody.id == 'custom-body') {
-					socket.emit('cmd', 'playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
-					socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+					exec('playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
+					exec('listplaylistinfo "' + custom + '"');
 				}
 			}
 		});
 		$('#custom-table').rowSorter({
 			onDrop: function (tbody, row, index, oldIndex) {
 				if (tbody.id == 'queue-body') {
-					socket.emit('cmd', 'move ' + oldIndex + ' ' + index);
+					exec('move ' + oldIndex + ' ' + index);
 				} else if (tbody.id == 'custom-body') {
-					socket.emit('cmd', 'playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
-					socket.emit('cmd', 'listplaylistinfo "' + custom + '"');
+					exec('playlistmove "' + custom + '" ' + oldIndex + ' ' + index);
+					exec('listplaylistinfo "' + custom + '"');
 				}
 			}
 		});
 	});
+
+	$('#controls button, #slider, #tab-queue').attr('disabled', 'disabled');
+	$('#unlock').click(function() {
+		locked = false;
+		$('#controls button, #slider').removeAttr('disabled');
+		$('#tab-queue').show();
+		$('#lock').hide();
+	});
+
 	/*
 	var dropZone = document.getElementById('drop-zone');
 	var uploadForm = document.getElementById('js-upload-form');
