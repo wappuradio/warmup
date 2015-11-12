@@ -33,7 +33,7 @@ $(function () {
 		locked = true;
 
 	function exec(line) {
-		if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save)$/gm)) {
+		if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
 			console.log('Blocked: ' + line);
 			return;
 		}
@@ -382,7 +382,9 @@ $(function () {
 	});
 	socket.on('listplaylistinfo', function (data) {
 		console.log('got custom');
-		updateCustom(data.msg.toString());
+		if (data.msg !== undefined) {
+			updateCustom(data.msg.toString());
+		}
 	});
 	socket.on('search', function (data) {
 		console.log('got results');
@@ -396,6 +398,7 @@ $(function () {
 	});
 	socket.on('listplaylist', function (data) {
 		console.log('got all playlists');
+		playlists = [];
 		var listname = data.cmd.split(' ')[1].replace(/"/g, '');
 		playlists[listname] = data.msg.toString();
 	});
