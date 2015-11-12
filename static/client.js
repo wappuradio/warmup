@@ -364,7 +364,7 @@ $(function () {
 	socket.on('playlistinfo', function (data) {
 		console.log('got queue');
 		updateQueue(data.msg.toString());
-		updateState();
+		exec('status');
 	});
 	socket.on('list', function (data) {
 		console.log('got albums');
