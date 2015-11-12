@@ -1,9 +1,9 @@
 # warmup
-Best MPD client.
+Best MPD web client written in node and bootstrap. Made for a radio station.
 ## Installation
 ```
 npm install
 bower install
 nano config.js.example
-node app.js
+forever start warmup.js
 ```
