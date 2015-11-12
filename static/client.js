@@ -125,6 +125,9 @@ $(function () {
 	function updateState(data) {
 		if (data !== undefined) {
 			state = toObject(data);
+			if (state.elapsed === undefined) {
+				state.elapsed = 0;
+			}
 			elapsed = parseFloat(state.elapsed);
 			$('.song-elapsed').html(elapsed);
 			$('#slider').val(elapsed);
