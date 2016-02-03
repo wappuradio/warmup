@@ -102,6 +102,9 @@ tbody tr:hover, tbody tr.sorting-row {
 	#setting-buttons .btn-lg i, #control-buttons .btn-lg i {
 		font-size: 18px;
 	}
+}
+
+@media (max-width: 960px) {
 	#next {
 		opacity: 0;
 	}
@@ -264,4 +267,8 @@ input[type=range]:focus::-ms-fill-lower {
 
 input[type=range]:focus::-ms-fill-upper {
 	background: #ffffff;
+}
+
+.container {
+	width: 100%;
 }

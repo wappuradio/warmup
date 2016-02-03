@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 try {
 	require.resolve('./config');
 } catch (e) {
@@ -12,7 +13,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
-var mpd, recon;
+var mpd, recon, np = { song: '' };
 
 mpd = Mpd.connect({
 	host: config.mpd_host,
@@ -34,6 +35,7 @@ mpd.on('ready', function () {
 });
 mpd.on('system-player', function () {
 	mpd.sendCommand('status', function (err, msg) {
+		console.log(msg);
 		io.sockets.emit('status', {
 			cmd: 'status',
 			msg: msg
@@ -42,6 +44,7 @@ mpd.on('system-player', function () {
 });
 mpd.on('system-options', function () {
 	mpd.sendCommand('status', function (err, msg) {
+		console.log(msg);
 		io.sockets.emit('status', {
 			cmd: 'status',
 			msg: msg
@@ -93,6 +96,10 @@ app.use(express.static(__dirname + '/static'));
 app.get('/', auth, function (req, res, next) {
 	res.sendFile(__dirname + '/index.html');
 });
+app.get('/np', function (req, res, next) {
+	res.set('Cache-control', 'no-cache');
+	res.send(np.song);
+});
 
 io.on('connection', function (client) {
 	console.log('Client connected...');
@@ -107,6 +114,21 @@ io.on('connection', function (client) {
 				cmd: data
 			});
 		});
+		if (sent == 'play' || sent == 'next') {
+			mpd.sendCommand('currentsong', function (err, msg) {
+				var artistreg = /^Artist: (.*)$/gm;
+				var titlereg = /^Title: (.*)$/gm;
+				var artist = artistreg.exec(msg);
+				var title = titlereg.exec(msg);
+				if (artist !== null && title !== null) {
+					np.song = artist[1]+' - '+title[1];
+				} else {
+					np.song = '';
+				}
+			});
+		} else if (sent == 'stop') {
+			np.song = '';
+		}
 	});
 });
 
