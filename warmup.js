@@ -97,8 +97,24 @@ app.get('/', auth, function (req, res, next) {
 	res.sendFile(__dirname + '/index.html');
 });
 app.get('/np', function (req, res, next) {
-	res.set('Cache-control', 'no-cache');
-	res.send(np.song);
+	mpd.sendCommand('currentsong', function (err, msg) {
+		res.setHeader('cache-control', 'no-cache');
+		res.setHeader('content-type', 'text/plain; charset=utf-8');
+		if(err) {
+			res.send('');
+			return;
+		}
+		var artistreg = /^Artist: (.*)$/gm;
+		var titlereg = /^Title: (.*)$/gm;
+		var artist = artistreg.exec(msg);
+		var title = titlereg.exec(msg);
+		if (artist !== null && title !== null) {
+			np.song = artist[1]+' - '+title[1];
+		} else {
+			np.song = '';
+		}
+		res.send(np.song);
+	});
 });
 
 io.on('connection', function (client) {
@@ -114,21 +130,6 @@ io.on('connection', function (client) {
 				cmd: data
 			});
 		});
-		if (sent == 'play' || sent == 'next') {
-			mpd.sendCommand('currentsong', function (err, msg) {
-				var artistreg = /^Artist: (.*)$/gm;
-				var titlereg = /^Title: (.*)$/gm;
-				var artist = artistreg.exec(msg);
-				var title = titlereg.exec(msg);
-				if (artist !== null && title !== null) {
-					np.song = artist[1]+' - '+title[1];
-				} else {
-					np.song = '';
-				}
-			});
-		} else if (sent == 'stop') {
-			np.song = '';
-		}
 	});
 });
 
