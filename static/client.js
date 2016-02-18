@@ -116,6 +116,7 @@ $(function () {
 		$('#queue-body').html('');
 		for (var i in queue) {
 			var s = queue[i];
+			console.log(s);
 			$('#queue-body').append('<tr><th>' + (1 + 1 * s.pos) + ' </th><td>' + formatTime(s.time) + ' </td><td><a href="#" class="button-action" data-cmd="play ' + s.pos + '"><i class="fa fa-play-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="#" class="button-action" data-cmd="delete ' + s.pos + '"><i class="fa fa-trash fa-fw"></i></a></td></tr>');
 		}
 		$('#tab-queue .text').html('Play queue (' + queue.length + ')');
