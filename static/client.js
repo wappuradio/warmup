@@ -319,8 +319,12 @@ $(function () {
 		$('#tab-custom').hide();
 	});
 	$('#addall').click(function () {
-		var addcmd = lastsearch.replace(/^find/, 'findadd').replace(/^search/, 'searchadd');
-		exec(addcmd);
+		if ($('#playlist').val() == '') {
+			var addcmd = lastsearch.replace(/^find/, 'findadd').replace(/^search/, 'searchadd');
+			exec(addcmd);
+		} else {
+			$('.button-add').click();
+		}
 	});
 	$(document).keydown(function (e) {
 		if (!$(e.target).is('input')) {

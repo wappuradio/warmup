@@ -65,7 +65,7 @@
 			<div class="panel-body">
 				<div class="tab-content">
 					<div class="tab-pane active in" id="queue">
-						<div class="pull-right" style="margin-bottom: -32px">
+						<div class="pull-right" style="margin-top: -52px; margin-right: -15px">
 							<button class="btn btn-sm btn-info" id="save"><i class="fa fa-save"></i> Save</button>
 							<button class="btn btn-sm btn-primary" id="shuffle"><i class="fa fa-random fa-rotate-90"></i> Shuffle</button>
 							<button class="btn btn-sm btn-danger" id="clear"><i class="fa fa-trash"></i> Clear</button>
@@ -86,15 +86,15 @@
 						</table>
 					</div>
 					<div class="tab-pane" id="results">
-						<div class="pull-right form-inline" style="margin-bottom: -32px">
-							<input type="text" class="form-control" id="playlist" size="10" placeholder="Add to list">
+						<div class="pull-right form-inline" style="margin-top: -52px; margin-right: -15px">
+							<input type="text" class="form-control" id="playlist" size="10" placeholder="Add to playlist">
 							<button class="btn btn-sm btn-info" id="addall"><i class="fa fa-plus"></i> Queue all</button>
 						</div>
 						<table class="table table-striped" data-sortable>
 							<thead>
 								<tr>
-									<th>#</th>
-									<th>Time</th>
+									<th data-sortable-type="numeric">#</th>
+									<th data-sortable-type="numeric">Time</th>
 									<th>Track</th>
 									<th>Artist</th>
 									<th>Album</th>
@@ -132,9 +132,9 @@
 						</table>
 					</div>
 					<div class="tab-pane" id="custom">
-						<div class="pull-right" style="margin-bottom: -32px">
+						<div class="pull-right" style="margin-top: -52px; margin-right: -15px">
 							<button class="btn btn-sm btn-info" id="queueall"><i class="fa fa-plus"></i> Queue all</button>
-							<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-trash"></i> Delete playlist</button>
+							<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-trash"></i> Delete</button>
 						</div>
 						<table class="table table-striped" id="custom-table">
 							<thead>
