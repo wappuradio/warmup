@@ -156,6 +156,10 @@ tr.cur td, tr.cur th {
 	animation: curPulse 1s infinite alternate;
 }
 
+td:last-child {
+	white-space: nowrap;
+}
+
 tr.next td, tr.next th {
 	font-style: italic;
 	background-color: rgba(250, 100, 60, 0.08);
