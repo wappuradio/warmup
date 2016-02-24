@@ -41,102 +41,6 @@ $(function () {
 		socket.emit('cmd', line);
 	}
 
-window.levDist = function(s, t) {
-        if (s === t) {
-            return 0;
-        }
-        var n = s.length, m = t.length;
-        if (n === 0 || m === 0) {
-            return n + m;
-        }
-        var x = 0, y, a, b, c, d, g, h;
-        var p = new Array(n);
-        for (y = 0; y < n;) {
-            p[y] = ++y;
-        }
-    
-        for (; (x + 3) < m; x += 4) {
-            var e1 = t.charCodeAt(x);
-            var e2 = t.charCodeAt(x + 1);
-            var e3 = t.charCodeAt(x + 2);
-            var e4 = t.charCodeAt(x + 3);
-            c = x;
-            b = x + 1;
-            d = x + 2;
-            g = x + 3;
-            h = x + 4;
-            for (y = 0; y < n; y++) {
-                var f = s.charCodeAt(y);
-                a = p[y];
-                if (a < c || b < c) {
-                    c = (a > b ? b + 1 : a + 1);
-                }
-                else {
-                    if (e1 !== f) {
-                        c++;
-                    }
-                }
-    
-                if (c < b || d < b) {
-                    b = (c > d ? d + 1 : c + 1);
-                }
-                else {
-                    if (e2 !== f) {
-                        b++;
-                    }
-                }
-    
-                if (b < d || g < d) {
-                    d = (b > g ? g + 1 : b + 1);
-                }
-                else {
-                    if (e3 !== f) {
-                        d++;
-                    }
-                }
-    
-                if (d < g || h < g) {
-                    g = (d > h ? h + 1 : d + 1);
-                }
-                else {
-                    if (e4 !== f) {
-                        g++;
-                    }
-                }
-                p[y] = h = g;
-                g = d;
-                d = b;
-                b = c;
-                c = a;
-            }
-        }
-    
-        for (; x < m;) {
-            var e = t.charCodeAt(x);
-            c = x;
-            d = ++x;
-            for (y = 0; y < n; y++) {
-                a = p[y];
-                if (a < c || d < c) {
-                    d = (a > d ? d + 1 : a + 1);
-                }
-                else {
-                    if (e !== s.charCodeAt(y)) {
-                        d = c + 1;
-                    }
-                    else {
-                        d = c;
-                    }
-                }
-                p[y] = d;
-                c = a;
-            }
-            h = d;
-        }
-    
-        return h;
-    }
-
 	function escapeRegExp(str) {
 		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 	}
@@ -301,15 +205,15 @@ window.levDist = function(s, t) {
 		$('#results-body').html('');
 		for (var i in results) {
 			var s = results[i];
-			var tag = '';
+			var tag = [];
 			for (var j in playlists) {
 				var reg = new RegExp(escapeRegExp(s.file), 'gm');
 				if (playlists[j].match(reg)) {
-					tag += j + ' ';
+					tag.push(j);
 				}
 			}
-			if (tag !== '') {
-				tag = '<div class="tag">' + tag + '</div>';
+			if (tag.length) {
+				tag = '<div class="tag">' + tag.join(', ') + '</div>';
 			}
 			$('#results-body').append('<tr><td>' + (1 * i + 1) + '</td><td>' + formatTime(s.time) + '</td><td>' + tag + '<a href="#" class="button-add" data-key="title" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>'+(s.date?'<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>':'')+'</td></tr>');
 		}
@@ -432,6 +336,9 @@ window.levDist = function(s, t) {
 		var str = $('#search').val();
 		if (e.which == 13) {
 			e.preventDefault();
+			if (str.length < 3 && !confirm('Are you sure? This might take a few seconds...')) {
+				return;
+			}
 			if (str.match(/^.+ ".+"$/)) {
 				exec('find ' + str);
 				lastsearch = 'find ' + str;
@@ -514,8 +421,8 @@ window.levDist = function(s, t) {
 	});
 	socket.on('listplaylist', function (data) {
 		console.log('got all playlists');
-		playlists = [];
-		var listname = data.cmd.split(' ')[1].replace(/"/g, '');
+		var listname = data.cmd.match(/^listplaylist "(.*)"$/);
+		listname = listname[1];
 		playlists[listname] = data.msg.toString();
 	});
 	setInterval(function () {

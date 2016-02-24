@@ -31,6 +31,11 @@ mpd.on('connect', function () {
 });
 mpd.on('ready', function () {
 	console.log('MPD ready');
+	if (config.mpd_pass !== '') {
+		mpd.sendCommand('password '+config.mpd_pass, function (err, msg) {
+			console.log(msg);
+		});
+	}
 });
 mpd.on('system-player', function () {
 	mpd.sendCommand('status', function (err, msg) {

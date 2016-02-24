@@ -3,6 +3,7 @@ var config = {
 	http_user: '',
 	http_pass: '',
 	mpd_host: 'localhost',
-	mpd_port: 6600
+	mpd_port: 6600,
+	mpd_pass: ''
 };
 module.exports = config;
