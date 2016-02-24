@@ -78,7 +78,7 @@ $(function () {
 		$('#albums-body').html('');
 		for (var i in albums) {
 			var s = albums[i];
-			$('#albums-body').append('<tr><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="#" class="button-find" data-key="genre" data-value="' + s.genre + '"><i class="fa fa-fw fa-search"></i> ' + s.genre + '</a> </td><td><a href="#" class="button-find" data-key="date" data-value="' + s.date + '"><i class="fa fa-fw fa-search"></i> ' + s.date + '</a> </td></tr>');
+			$('#albums-body').append('<tr><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>'+(s.date?'<a href="#" class="button-find" data-key="date" data-value="' + s.date + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date + '</a>':'')+'</td></tr>');
 		}
 		$('#tab-albums .text').html('Database (' + albums.length + ')');
 	}
@@ -92,7 +92,7 @@ $(function () {
 		for (var i in lists) {
 			var s = lists[i];
 			exec('listplaylist "' + s.playlist + '"');
-			$('#playlists-body').append('<tr><td><a href="#" class="button-edit-list" data-name="' + s.playlist + '"><i class="fa fa-fw fa-pencil"></i> ' + s.playlist + ' </td><td>' + s['last-modified'] + '</td><td><a href="#" class="button-queue-list" data-name="' + s.playlist + '"><i class="fa fa-fw fa-plus-circle"></i> Queue all</a></td></tr>');
+			$('#playlists-body').append('<tr><td><a href="#" class="button-edit-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-pencil"></i> ' + s.playlist + ' </td><td>' + s['last-modified'] + '</td><td><a href="#" class="button-queue-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> Queue all</a></td></tr>');
 		}
 		$('#tab-playlists .text').html('Saved playlists (' + lists.length + ')');
 	}
@@ -104,7 +104,7 @@ $(function () {
 		$('#custom-body').html('');
 		for (var i in customlist) {
 			var s = customlist[i];
-			$('#custom-body').append('<tr><th>' + (1 + 1 * i) + ' </th><td>' + formatTime(s.time) + ' </td><td><a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="" class="button-action" data-cmd=\'playlistdelete \"' + custom + '\" ' + i + '\'><i class="fa fa-trash fa-fw"></i></a></td></tr>');
+			$('#custom-body').append('<tr><th>' + (1 + 1 * i) + ' </th><td>' + formatTime(s.time) + ' </td><td><a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="" class="button-action" data-cmd=\'playlistdelete \"' + custom + '\" ' + i + '\'><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
 		}
 		$('#tab-custom .text').html(custom + ' (' + customlist.length + ')');
 	}
@@ -116,8 +116,7 @@ $(function () {
 		$('#queue-body').html('');
 		for (var i in queue) {
 			var s = queue[i];
-			console.log(s);
-			$('#queue-body').append('<tr><th>' + (1 + 1 * s.pos) + ' </th><td>' + formatTime(s.time) + ' </td><td><a href="#" class="button-action" data-cmd="play ' + s.pos + '"><i class="fa fa-play-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="#" class="button-action" data-cmd="delete ' + s.pos + '"><i class="fa fa-trash fa-fw"></i></a></td></tr>');
+			$('#queue-body').append('<tr><th>' + (1 + 1 * s.pos) + ' </th><td>' + formatTime(s.time) + ' </td><td><a href="#" class="button-action" data-cmd="play ' + s.pos + '"><i class="fa fa-lg fa-fw fa-play-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="#" class="button-action" data-cmd="delete ' + s.pos + '"><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
 		}
 		$('#tab-queue .text').html('Play queue (' + queue.length + ')');
 		updateState();
@@ -213,7 +212,7 @@ $(function () {
 			if (tag !== '') {
 				tag = '<div class="tag">' + tag + '</div>';
 			}
-			$('#results-body').append('<tr><td>' + (1 * i + 1) + '</td><td>' + formatTime(s.time) + ' </td><td>' + tag + '<a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-fw fa-search"></i> ' + s.album + '</a> </td></tr>');
+			$('#results-body').append('<tr><td>' + (1 * i + 1) + '</td><td>' + formatTime(s.time) + ' </td><td>' + tag + '<a href="#" class="button-add" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>'+(s.date?'<a href="#" class="button-find" data-key="date" data-value="' + s.date + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date + '</a>':'')+'</td></tr>');
 		}
 		$('#tab-results .text').html('Search results (' + results.length + ')');
 	}
@@ -361,7 +360,7 @@ $(function () {
 	socket.on('connect', function (data) {
 		exec('status');
 		exec('playlistinfo');
-		exec('list artist group album group date group genre');
+		exec('list artist group album group date');
 		exec('listplaylists');
 	});
 	socket.on('status', function (data) {

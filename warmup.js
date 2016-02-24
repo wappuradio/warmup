@@ -13,21 +13,20 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
-var mpd, recon, np = { song: '' };
+var mpd, np = { song: '' };
 
 mpd = Mpd.connect({
 	host: config.mpd_host,
 	port: config.mpd_port
 });
+mpd.on('error', function (err) {
+	console.log(err);
+});
 mpd.on('end', function () {
-	recon = setInterval(function () {
-		console.log('MPD reconnecting');
-		connect();
-	}, 5000);
-	console.log('MPD disconnected');
+	console.log('MPD disconnected, quitting');
+	process.exit(0);
 });
 mpd.on('connect', function () {
-	clearInterval(recon);
 	console.log('MPD connected');
 });
 mpd.on('ready', function () {
@@ -109,7 +108,7 @@ app.get('/np', function (req, res, next) {
 		var artist = artistreg.exec(msg);
 		var title = titlereg.exec(msg);
 		if (artist !== null && title !== null) {
-			np.song = artist[1]+' - '+title[1];
+			np.song = artist[1].trim()+' - '+title[1].trim();
 		} else {
 			np.song = '';
 		}
