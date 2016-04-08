@@ -312,7 +312,7 @@ $(function () {
 		exec('load "' + custom + '"');
 	});
 	$('#clear').click(function () {
-		exec('clear');
+		if(confirm('Are you sure? Clearing will stop the current song.')) exec('clear');
 	});
 	$('#delete').click(function () {
 		if (custom !== '') {
