@@ -315,7 +315,7 @@ $(function () {
 		if(confirm('Are you sure? Clearing will stop the current song.')) exec('clear');
 	});
 	$('#delete').click(function () {
-		if (custom !== '') {
+		if (custom !== '' && confirm('Are you sure you want to delete playlist '+custom+'?')) {
 			exec('rm "' + custom + '"');
 		}
 		$('#tab-playlists').click();
@@ -347,7 +347,7 @@ $(function () {
 				$('#results tbody tr').each(function(i, tr) {
 					for (var i in keys) {
 						var data = $(tr).find('[data-key="' + keys[i] + '"]').data('value') || '';
-						data = data.toLowerCase();
+						data = data.toString().toLowerCase();
 						str = str.toLowerCase();
 						if (data == str) {
 							return;
