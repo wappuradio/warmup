@@ -289,6 +289,7 @@ $(function () {
 		exec('load "' + $(this).data('name') + '"');
 		exec('status');
 		exec('playlistinfo');
+		$('#tab-queue').tab('show');
 	});
 	$('#playlists-body').on('click', '.button-edit-list', function (e) {
 		e.preventDefault();
@@ -310,6 +311,7 @@ $(function () {
 	});
 	$('#queueall').click(function () {
 		exec('load "' + custom + '"');
+		$('#tab-queue').tab('show');
 	});
 	$('#clear').click(function () {
 		if(confirm('Are you sure? Clearing will stop the current song.')) exec('clear');
@@ -325,6 +327,7 @@ $(function () {
 		if ($('#playlist').val() == '') {
 			var addcmd = lastsearch.replace(/^find/, 'findadd').replace(/^search/, 'searchadd');
 			exec(addcmd);
+			$('#tab-queue').tab('show');
 		} else {
 			$('.button-add').click();
 		}
