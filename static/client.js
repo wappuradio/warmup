@@ -18,6 +18,16 @@ $.fn.animateRotate = function (start, angle, duration, complete) {
 		});
 	});
 };
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length === 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
 $(function () {
 	var socket = io.connect(window.location.href),
 		state = {},
@@ -148,6 +158,13 @@ $(function () {
 			});
 		}
 		if (queue.length > 0 && state.song !== undefined) {
+			var hash = queue[state.song].file.hashCode();
+			$('#waveform').css('background-size', '100% 0%');
+			$('<img/>').attr('src', '/waveform?'+hash).load(function() {
+				$(this).remove();
+ 				$('#waveform').css('background-image', 'url(/waveform?'+hash+')');
+				$('#waveform').css('background-size', '100% 100%');
+			});
 			$('#player').fadeIn();
 			for (var i in queue[state.song]) {
 				if (queue[state.song].hasOwnProperty(i)) {

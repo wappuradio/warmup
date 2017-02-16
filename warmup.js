@@ -14,6 +14,7 @@ var io = require('socket.io')(server);
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
 var mpd, np = { song: '' };
+var spawn = require('child_process').spawn;
 
 mpd = Mpd.connect({
 	host: config.mpd_host,
@@ -118,6 +119,26 @@ app.get('/np', function (req, res, next) {
 			np.song = '';
 		}
 		res.send(np.song);
+	});
+});
+app.get('/waveform', function (req, res, next) {
+	mpd.sendCommand('currentsong', function (err, msg) {
+		res.setHeader('cache-control', 'no-cache');
+		if(err) {
+			res.status(400)
+			res.send(msg);
+			return;
+		}
+		res.setHeader('content-type', 'image/png');
+		var filereg = /^file: (.*)$/gm;
+		var file = filereg.exec(msg);
+		if (file !== null) {
+			var waveform = spawn('wav2png', ['-w', '1280', '-h', '100', '-b', '00000000', '-f', 'ffffffbb', '-o', '/tmp/waveform.png', '/home/dregu/music/'+file[1]]);
+			waveform.on('close', function(code) {
+				console.log('wav2png exited with code '+code)
+				res.sendFile('/tmp/waveform.png');
+			})
+		}
 	});
 });
 
