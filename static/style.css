@@ -36,13 +36,14 @@
 }
 
 #waveform {
-	width: 100%;
+	width: calc(100%-12px);
 	height: 100px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	background-image: url(/waveform);
 	transition: all 0.5s ease;
+	margin: 0 6px;
 }
 
 .player-icon {
@@ -54,7 +55,8 @@
 
 .player-icon.fa-play {
 	color: white;
-	animation: playPulse 1s infinite alternate;
+	/* animation: playPulse 1s infinite alternate;
+	transform: translateZ(0); */
 }
 
 #playerdiv {
@@ -142,7 +144,7 @@ tbody tr:hover, tbody tr.sorting-row {
 		background-color: rgba(0, 0, 0, 0);
 	}
 	100% {
-		background-color: rgba(70, 180, 255, 0.2);
+		background-color: rgba(70, 180, 255, 0.3);
 	}
 }
 
@@ -155,24 +157,25 @@ tbody tr:hover, tbody tr.sorting-row {
 	}
 }
 
-tr.cur td, tr.cur th {
+tr.cur {
 	font-weight: bold;
-	background-color: rgba(70, 180, 255, 0.1);
+	background-color: rgba(70, 180, 255, 0.2) !important;
 }
 
-.play tr.cur td, .play tr.cur th {
+.play tr.cur {
 	font-weight: bold;
-	background-color: rgba(70, 180, 255, 0.2);
-	animation: curPulse 1s infinite alternate;
+	background-color: rgba(70, 180, 255, 0.35) !important;
+	/* animation: curPulse 1s infinite alternate;
+	transform: translateZ(0); */
 }
 
 td:last-child {
 	white-space: nowrap;
 }
 
-tr.next td, tr.next th {
+tr.next {
 	font-style: italic;
-	background-color: rgba(250, 100, 60, 0.08);
+	background-color: rgba(250, 100, 60, 0.2) !important;
 }
 
 .tag {
