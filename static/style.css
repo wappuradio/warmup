@@ -26,29 +26,23 @@
 	height: 31px;
 }
 
-#sliderdiv {
-	height: 18px;
-	margin-top: 3px;
-}
-
 #slider {
-	width: 100%;
+	width: calc(100% + 14px);
+	margin: 45px -7px 0 -7px;
 }
 
 #waveform {
-	border-top: 1px solid #555;
-	border-bottom: 1px solid #555;
+	border-top: 1px solid rgba(0,0,0,0.4);
+	border-bottom: 1px solid rgba(0,0,0,0.4);
 	transform: translateZ(0);
 	width: calc(100%-12px);
 	height: 100px;
-	opacity: 0.7;
-	background-color: magenta;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 	background-image: url(/waveform);
 	transition: all 0.5s ease;
-	margin: 0 6px;
+	margin: 15px 0 0 0;
 }
 
 .player-icon {
@@ -59,7 +53,7 @@
 }
 
 .player-icon.fa-play {
-	color: white;
+	color: rgba(70, 180, 255, 1);
 	/* animation: playPulse 1s infinite alternate;
 	transform: translateZ(0); */
 }

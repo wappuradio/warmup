@@ -4,6 +4,7 @@ var config = {
 	http_pass: '',
 	mpd_host: 'localhost',
 	mpd_port: 6600,
-	mpd_pass: ''
+	mpd_pass: '',
+	music_dir: '/var/lib/mpd/music'
 };
 module.exports = config;

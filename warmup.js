@@ -133,7 +133,7 @@ app.get('/waveform', function (req, res, next) {
 		var filereg = /^file: (.*)$/gm;
 		var file = filereg.exec(msg);
 		if (file !== null) {
-			var waveform = spawn('wav2png', ['-w', '1800', '-h', '100', '-b', '2e3338ff', '-f', '00000000', '-o', '/tmp/waveform.png', '/home/dregu/music/'+file[1]]);
+			var waveform = spawn('wav2png', ['-w', '1800', '-h', '100', '-b', '2e3338ff', '-f', '00000000', '-o', '/tmp/waveform.png', config.music_dir+'/'+file[1]]);
 			waveform.on('close', function(code) {
 				console.log('wav2png exited with code '+code)
 				res.sendFile('/tmp/waveform.png');

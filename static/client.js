@@ -35,6 +35,7 @@ $(function () {
 		results = [],
 		albums = [],
 		elapsed = 0,
+		laststate = 0,
 		lastsearch = '',
 		mousedown = false,
 		custom = '',
@@ -141,8 +142,8 @@ $(function () {
 			if (state.elapsed === undefined) {
 				state.elapsed = 0;
 			}
+			laststate = +new Date();
 			elapsed = parseFloat(state.elapsed);
-			$('.song-elapsed').html(elapsed);
 			$('#slider').val(elapsed);
 		}
 		if (state === undefined) return;
@@ -160,14 +161,16 @@ $(function () {
 		if (queue.length > 0 && state.song !== undefined) {
 			var hash = queue[state.song].file.hashCode();
 			//$('#waveform').css('background-size', '100% 0%');
-			$('#waveform').css('height', '0');
-			$('#waveform').css('margin-top', '50px');
+			//$('#waveform').css('height', '0');
+			//$('#waveform').css('margin-top', '50px');
+			$('#waveform').css('background-color', '#2e3338');
 			$('<img/>').attr('src', '/waveform?'+hash).load(function() {
 				$(this).remove();
  				$('#waveform').css('background-image', 'url(/waveform?'+hash+')');
+				$('#waveform').css('background-color', 'rgba(0,0,0,0.4)');
 				//$('#waveform').css('background-size', '100% 100%');
-				$('#waveform').css('height', '100px');
-				$('#waveform').css('margin-top', '0');
+				//$('#waveform').css('height', '100px');
+				//$('#waveform').css('margin-top', '0');
 			});
 			$('#player').fadeIn();
 			for (var i in queue[state.song]) {
@@ -451,7 +454,8 @@ $(function () {
 	});
 	setInterval(function () {
 		if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
-			elapsed += 0.1;
+			//elapsed += 0.1;
+			elapsed = parseFloat(state.elapsed)+(new Date()-laststate)/1000+0.5;
 			elapsed = Number(elapsed.toFixed(3));
 			if (!mousedown) {
 				$('#slider').val(elapsed);
@@ -477,11 +481,14 @@ $(function () {
 			var left = total - elapsed;
 			if (left > 60) {
 				$('#timeleft').html(formatTime(left));
+				$('title').html('&#9654; '+formatTime(left));
 			} else {
 				$('#timeleft').html(left.toFixed(1));
+				$('title').html('&#9654; '+left.toFixed(0)+'s');
 			}
 		} else {
 			$('#timeleft').html('');
+			$('title').html('&#9632;');
 		}
 	}, 100);
 	$(window).load(function () {
