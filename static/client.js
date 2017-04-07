@@ -159,11 +159,15 @@ $(function () {
 		}
 		if (queue.length > 0 && state.song !== undefined) {
 			var hash = queue[state.song].file.hashCode();
-			$('#waveform').css('background-size', '100% 0%');
+			//$('#waveform').css('background-size', '100% 0%');
+			$('#waveform').css('height', '0');
+			$('#waveform').css('margin-top', '50px');
 			$('<img/>').attr('src', '/waveform?'+hash).load(function() {
 				$(this).remove();
  				$('#waveform').css('background-image', 'url(/waveform?'+hash+')');
-				$('#waveform').css('background-size', '100% 100%');
+				//$('#waveform').css('background-size', '100% 100%');
+				$('#waveform').css('height', '100px');
+				$('#waveform').css('margin-top', '0');
 			});
 			$('#player').fadeIn();
 			for (var i in queue[state.song]) {

@@ -36,8 +36,13 @@
 }
 
 #waveform {
+	border-top: 1px solid #555;
+	border-bottom: 1px solid #555;
+	transform: translateZ(0);
 	width: calc(100%-12px);
 	height: 100px;
+	opacity: 0.7;
+	background-color: magenta;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
