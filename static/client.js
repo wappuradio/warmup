@@ -30,7 +30,8 @@ $(function () {
 		custom = '',
 		customlist = [],
 		playlists = [],
-		locked = true;
+		locked = false;
+		//locked = true;
 
 	function exec(line) {
 		if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
@@ -76,6 +77,7 @@ $(function () {
 			albums = toArray(data, 'Artist');
 		}
 		albums.sort(function(a, b) {
+			if(!a.artist) return 0;
 			return(a.artist.localeCompare(b.artist));
 		});
 		$('#albums-body').html('');
@@ -483,11 +485,11 @@ $(function () {
 		});
 	});
 
-	$('#controls button, #slider, #tab-queue').attr('disabled', 'disabled');
+	/*$('#controls button, #slider, #tab-queue').attr('disabled', 'disabled');
 	$('#unlock').click(function () {
 		locked = false;
 		$('#controls button, #slider').removeAttr('disabled');
 		$('#tab-queue').show();
 		$('#lock').hide();
-	});
+	});*/
 });

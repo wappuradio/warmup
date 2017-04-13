@@ -102,8 +102,10 @@ app.get('/', auth, function (req, res, next) {
 });
 app.get('/np', function (req, res, next) {
 	mpd.sendCommand('currentsong', function (err, msg) {
-		res.setHeader('cache-control', 'no-cache');
-		res.setHeader('content-type', 'text/plain; charset=utf-8');
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+		res.setHeader('Cache-Control', 'no-cache');
 		if(err) {
 			res.send('');
 			return;
@@ -121,10 +123,15 @@ app.get('/np', function (req, res, next) {
 	});
 });
 
+var whitelist = ['10.1.0.51', '10.1.0.52', '10.1.0.53', '10.1.0.54', '10.1.0.42'];
 io.on('connection', function (client) {
-	console.log('Client connected...');
+	console.log('Client connected...', client.handshake);
 	client.on('cmd', function (data) {
-		console.log(data);
+		var ip = client.handshake.headers['x-forwarded-for'];
+		var cmd = data.split(' ')[0];
+		if (whitelist.indexOf(ip) < 0 && !data.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
+			return;
+		}
 		var cli = client;
 		var sent = data.split(' ')[0];
 		mpd.sendCommand(data, function (err, msg) {
