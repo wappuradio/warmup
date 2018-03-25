@@ -12,3 +12,5 @@ pm2 start warmup.js
 ```
 
 Also requires [wav2png](https://github.com/beschulz/wav2png) binary in path to generate waveforms.
+
+> *"Fuck this player!"* -anonymous radio jockey
