@@ -169,7 +169,7 @@ $(function() {
         }
         if (queue.length > 0 && state.song !== undefined) {
             var hash = queue[state.song].file.hashCode();
-            //$('#waveform').css('background-size', '100% 0%');
+            $('#waveform').css('background-size', '100% 1000%');
             //$('#waveform').css('height', '0');
             //$('#waveform').css('margin-top', '50px');
             $('#waveform').css('background-color', '#2e3338');
@@ -177,7 +177,7 @@ $(function() {
                 $(this).remove();
                 $('#waveform').css('background-image', 'url(waveform?' + hash + ')');
                 $('#waveform').css('background-color', 'rgba(0,0,0,0.4)');
-                //$('#waveform').css('background-size', '100% 100%');
+                $('#waveform').css('background-size', '100% 100%');
                 //$('#waveform').css('height', '100px');
                 //$('#waveform').css('margin-top', '0');
             });
@@ -468,7 +468,8 @@ $(function() {
                 $('#tab-results').click();
             } else if (cmd == 'listplaylist') {
                 console.log('got all playlists');
-                var listname = data.cmd.match('^listplaylist "(.*)"$');
+                var listname = data.cmd.match(/^listplaylist "(.*)"$/);
+                console.log(listname);
                 listname = listname[1];
                 playlists[listname] = data.msg.toString();
             }

@@ -161,10 +161,10 @@ wss.on('connection', function(client, request) {
     client.on('message', function(data) {
         console.log(data);
         var cli = client;
-        var sent = data.split(' ')[0];
+        var sent = data;
         mpd.sendCommand(data, function(err, msg) {
             if (err) console.log(err);
-            send(cli, sent, msg);
+            send(cli, data, msg);
         });
     });
 });
