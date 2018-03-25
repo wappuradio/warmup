@@ -91,7 +91,11 @@ $(function() {
             albums = toArray(data, 'Artist');
         }
         albums.sort(function(a, b) {
-            return (a.artist.localeCompare(b.artist));
+            if(a.artist && b.artist) {
+                return (a.artist.localeCompare(b.artist));
+            } else {
+                return 0;
+            }
         });
         $('#albums-body').html('');
         for (var i in albums) {
@@ -405,6 +409,10 @@ $(function() {
         exec('status');
     });
     $('#slider').mouseup(function() {
+        if(state.state == 'stop') {
+            exec('play');
+            exec('pause 1');
+        }
         exec('seekcur ' + $(this).val());
     });
 
@@ -419,9 +427,9 @@ $(function() {
             exec('listplaylists');
         };
 
-	    socket.onclose = function(e) {
-    	    setTimeout(init, 500);
-    	};
+        socket.onclose = function(e) {
+            setTimeout(init, 500);
+        };
 
         socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
