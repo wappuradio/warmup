@@ -1,9 +1,12 @@
 var config = {
-	http_port: 8080,
-	http_user: '',
-	http_pass: '',
-	mpd_host: 'localhost',
-	mpd_port: 6600,
-	mpd_pass: ''
+    http_port: 6680,
+    http_user: '',
+    http_pass: '',
+    mpd_host: 'localhost',
+    mpd_port: 6600,
+    mpd_pass: '',
+    ws_host: 'localhost',
+    ws_port: 6681,
+    music_dir: '/var/lib/mpd/music'
 };
 module.exports = config;

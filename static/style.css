@@ -11,7 +11,7 @@
 
 #timeleft {
 	position: absolute;
-	top: 170px;
+	top: 270px;
 	left: 50%;
 	width: 200px;
 	margin-left: -100px;
@@ -26,13 +26,23 @@
 	height: 31px;
 }
 
-#sliderdiv {
-	height: 18px;
-	margin-top: 3px;
+#slider {
+	width: calc(100% + 14px);
+	margin: 45px -7px 0 -7px;
 }
 
-#slider {
-	width: 100%;
+#waveform {
+	border-top: 1px solid rgba(0,0,0,0.4);
+	border-bottom: 1px solid rgba(0,0,0,0.4);
+	transform: translateZ(0);
+	width: calc(100%-12px);
+	height: 100px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	background-image: url(/waveform);
+	transition: all 0.5s ease;
+	margin: 15px 0 0 0;
 }
 
 .player-icon {
@@ -43,12 +53,13 @@
 }
 
 .player-icon.fa-play {
-	color: white;
-	animation: playPulse 1s infinite alternate;
+	color: rgba(70, 180, 255, 1);
+	/* animation: playPulse 1s infinite alternate;
+	transform: translateZ(0); */
 }
 
 #playerdiv {
-	height: 130px;
+	height: 230px;
 }
 
 #player {
@@ -132,7 +143,7 @@ tbody tr:hover, tbody tr.sorting-row {
 		background-color: rgba(0, 0, 0, 0);
 	}
 	100% {
-		background-color: rgba(70, 180, 255, 0.2);
+		background-color: rgba(70, 180, 255, 0.3);
 	}
 }
 
@@ -145,24 +156,25 @@ tbody tr:hover, tbody tr.sorting-row {
 	}
 }
 
-tr.cur td, tr.cur th {
+tr.cur {
 	font-weight: bold;
-	background-color: rgba(70, 180, 255, 0.1);
+	background-color: rgba(70, 180, 255, 0.2) !important;
 }
 
-.play tr.cur td, .play tr.cur th {
+.play tr.cur {
 	font-weight: bold;
-	background-color: rgba(70, 180, 255, 0.2);
-	animation: curPulse 1s infinite alternate;
+	background-color: rgba(70, 180, 255, 0.35) !important;
+	/* animation: curPulse 1s infinite alternate;
+	transform: translateZ(0); */
 }
 
 td:last-child {
 	white-space: nowrap;
 }
 
-tr.next td, tr.next th {
+tr.next {
 	font-style: italic;
-	background-color: rgba(250, 100, 60, 0.08);
+	background-color: rgba(250, 100, 60, 0.2) !important;
 }
 
 .tag {
