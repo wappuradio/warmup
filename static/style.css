@@ -28,14 +28,16 @@
 
 #slider {
 	width: calc(100% + 14px);
-	margin: 45px -7px 0 -7px;
+	height: 16px;
+	margin: 40px -7px 0 -7px;
+	background: transparent;
 }
 
 #waveform {
 	border-top: 1px solid rgba(0,0,0,0.4);
 	border-bottom: 1px solid rgba(0,0,0,0.4);
 	transform: translateZ(0);
-	width: calc(100%-12px);
+	width: calc(100% - 12px);
 	height: 100px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;

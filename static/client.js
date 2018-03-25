@@ -171,8 +171,6 @@ $(function() {
         if (queue.length > 0 && state.song !== undefined) {
             hash = queue[state.song].file.hashCode();
             $('#waveform').css('background-size', '100% 1000%');
-            //$('#waveform').css('height', '0');
-            //$('#waveform').css('margin-top', '50px');
             $('#waveform').css('background-color', '#2e3338');
             $('#waveform').css('background-image', '')
             $('<img/>').attr('src', 'waveform?' + hash).load(function() {
@@ -180,8 +178,6 @@ $(function() {
                 $('#waveform').css('background-image', 'url(waveform?' + hash + ')');
                 $('#waveform').css('background-color', 'rgba(0,0,0,0.3)');
                 $('#waveform').css('background-size', '100% 100%');
-                //$('#waveform').css('height', '100px');
-                //$('#waveform').css('margin-top', '0');
             });
             $('#player').fadeIn();
             for (var i in queue[state.song]) {
@@ -477,7 +473,7 @@ $(function() {
             }
         };
     }
-    setInterval(function() {
+    function slide() {
         if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
             //elapsed += 0.1;
             elapsed = parseFloat(state.elapsed) + (new Date() - laststate) / 1000 + 0.5;
@@ -486,7 +482,7 @@ $(function() {
                 $('#slider').val(elapsed);
             }
             var perc = elapsed/state.duration*100;
-            $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.4) 0%, rgba(255,105,180,0.7) '+(perc-0.5)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
+            $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.7) 0%, rgba(255,105,180,0.7) '+(perc-0.5)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
             $('.song-elapsed').html(formatTime(elapsed));
             var total = queue[parseInt(state.song)].time;
             if (state.consume == '0' && state.repeat == '1') {
@@ -517,7 +513,9 @@ $(function() {
             $('#timeleft').html('');
             $('title').html('&#9632;');
         }
-    }, 100);
+        window.requestAnimationFrame(slide);
+    }
+    window.requestAnimationFrame(slide);
     $(window).load(function() {
         $('#queue-table').rowSorter({
             onDrop: function(tbody, row, index, oldIndex) {
