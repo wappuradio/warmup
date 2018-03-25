@@ -22,7 +22,7 @@ String.prototype.hashCode = function() {
     var hash = 0,
         i, chr, len;
     if (this.length === 0) {
-    	return hash;
+        return hash;
     }
     for (i = 0, len = this.length; i < len; i++) {
         chr = this.charCodeAt(i);
@@ -33,7 +33,7 @@ String.prototype.hashCode = function() {
 };
 $(function() {
     var wsurl = 'ws://' + window.location.hostname + ':6681',
-        socket = new WebSocket(wsurl),
+        socket,
         state = {},
         queue = [],
         results = [],
@@ -168,9 +168,9 @@ $(function() {
             //$('#waveform').css('height', '0');
             //$('#waveform').css('margin-top', '50px');
             $('#waveform').css('background-color', '#2e3338');
-            $('<img/>').attr('src', '/waveform?' + hash).load(function() {
+            $('<img/>').attr('src', 'waveform?' + hash).load(function() {
                 $(this).remove();
-                $('#waveform').css('background-image', 'url(/waveform?' + hash + ')');
+                $('#waveform').css('background-image', 'url(waveform?' + hash + ')');
                 $('#waveform').css('background-color', 'rgba(0,0,0,0.4)');
                 //$('#waveform').css('background-size', '100% 100%');
                 //$('#waveform').css('height', '100px');
@@ -408,60 +408,63 @@ $(function() {
         exec('seekcur ' + $(this).val());
     });
 
-    socket.onopen = function(data) {
-        exec('status');
-        exec('playlistinfo');
-        exec('list artist group album group date');
-        exec('listplaylists');
-    };
-    socket.onclose = function(e) {
-        setTimeout(function() {
-            socket = new WebSocket(wsurl)
-        }, 5000);
-    }
+    function init() {
+        socket = new WebSocket(wsurl);
+        window.socket = socket;
 
-
-    socket.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-        if (!data.cmd) return;
-        var cmd = data.cmd.split(' ')[0];
-        if (cmd == 'status') {
-            console.log('got status');
-            updateState(data.msg.toString());
-            updateQueue();
-        } else if (cmd == 'playlistinfo') {
-            console.log('got queue');
-            updateQueue(data.msg.toString());
+        socket.onopen = function(data) {
             exec('status');
-        } else if (cmd == 'list') {
-            console.log('got albums');
-            updateAlbums(data.msg.toString());
-        } else if (cmd == 'listplaylists') {
-            console.log('got playlists');
-            updatePlaylists(data.msg.toString());
-            if (custom !== '') {
-                exec('listplaylistinfo "' + custom + '"');
+            exec('playlistinfo');
+            exec('list artist group album group date');
+            exec('listplaylists');
+        };
+
+	    socket.onclose = function(e) {
+    	    setTimeout(init, 500);
+    	};
+
+        socket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            if (!data.cmd) return;
+            var cmd = data.cmd.split(' ')[0];
+            if (cmd == 'status') {
+                console.log('got status');
+                updateState(data.msg.toString());
+                updateQueue();
+            } else if (cmd == 'playlistinfo') {
+                console.log('got queue');
+                updateQueue(data.msg.toString());
+                exec('status');
+            } else if (cmd == 'list') {
+                console.log('got albums');
+                updateAlbums(data.msg.toString());
+            } else if (cmd == 'listplaylists') {
+                console.log('got playlists');
+                updatePlaylists(data.msg.toString());
+                if (custom !== '') {
+                    exec('listplaylistinfo "' + custom + '"');
+                }
+            } else if (cmd == 'listplaylistinfo') {
+                console.log('got custom');
+                if (data.msg !== undefined) {
+                    updateCustom(data.msg.toString());
+                }
+            } else if (cmd == 'search') {
+                console.log('got results');
+                updateResults(data.msg);
+                $('#tab-results').click();
+            } else if (cmd == 'find') {
+                console.log('got results');
+                updateResults(data.msg.toString());
+                $('#tab-results').click();
+            } else if (cmd == 'listplaylist') {
+                console.log('got all playlists');
+                var listname = data.cmd.match('^listplaylist "(.*)"$');
+                listname = listname[1];
+                playlists[listname] = data.msg.toString();
             }
-        } else if (cmd == 'listplaylistinfo') {
-            console.log('got custom');
-            if (data.msg !== undefined) {
-                updateCustom(data.msg.toString());
-            }
-        } else if (cmd == 'search') {
-            console.log('got results');
-            updateResults(data.msg);
-            $('#tab-results').click();
-        } else if (cmd == 'find') {
-            console.log('got results');
-            updateResults(data.msg.toString());
-            $('#tab-results').click();
-        } else if (cmd == 'listplaylist') {
-            console.log('got all playlists');
-            var listname = data.cmd.match('^listplaylist "(.*)"$');
-            listname = listname[1];
-            playlists[listname] = data.msg.toString();
-        }
-    };
+        };
+    }
     setInterval(function() {
         if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
             //elapsed += 0.1;
@@ -531,4 +534,5 @@ $(function() {
         $('#tab-queue').show();
         $('#lock').hide();
     });
+    init();
 });

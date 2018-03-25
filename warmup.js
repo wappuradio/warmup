@@ -23,7 +23,6 @@ var mpd, np = {
 var spawn = require('child_process').spawn;
 
 var send = function(me, cmd, data) {
-    console.log('sending', cmd, data, 'to', me);
     if (me && me.readyState === 1) {
         var json = JSON.stringify({
             cmd: cmd,
@@ -34,11 +33,8 @@ var send = function(me, cmd, data) {
 }
 
 var broadcast = function(cmd, data) {
-    console.log('trying to broadcast', cmd);
     wss.clients.forEach(function(me) {
-        console.log('client is', me);
         if (me && me.readyState === 1) {
-            console.log('broadcasting', cmd, data, 'to', me);
             var json = JSON.stringify({
                 cmd: cmd,
                 msg: data
