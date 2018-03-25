@@ -46,7 +46,8 @@ $(function() {
         custom = '',
         customlist = [],
         playlists = [],
-        locked = true;
+        locked = true,
+        hash = 0;
 
     function exec(line) {
         if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
@@ -160,23 +161,24 @@ $(function() {
         $('body').addClass(state.state);
         $('#queue-body tr').removeClass('cur next');
         if ($('.player-icon').data('state') != state.state) {
-            $('.player-icon').animateRotate(0, 90, 300, function() {
+            $('.player-icon').animateRotate(0, 90, 150, function() {
                 $('.player-icon').removeClass('fa-stop fa-play fa-pause').addClass('fa-' + state.state);
-                $('.player-icon').animateRotate(90, 0, 300, function() {
+                $('.player-icon').animateRotate(90, 0, 150, function() {
                     $('.player-icon').data('state', state.state);
                 });
             });
         }
         if (queue.length > 0 && state.song !== undefined) {
-            var hash = queue[state.song].file.hashCode();
+            hash = queue[state.song].file.hashCode();
             $('#waveform').css('background-size', '100% 1000%');
             //$('#waveform').css('height', '0');
             //$('#waveform').css('margin-top', '50px');
             $('#waveform').css('background-color', '#2e3338');
+            $('#waveform').css('background-image', '')
             $('<img/>').attr('src', 'waveform?' + hash).load(function() {
                 $(this).remove();
                 $('#waveform').css('background-image', 'url(waveform?' + hash + ')');
-                $('#waveform').css('background-color', 'rgba(0,0,0,0.4)');
+                $('#waveform').css('background-color', 'rgba(0,0,0,0.3)');
                 $('#waveform').css('background-size', '100% 100%');
                 //$('#waveform').css('height', '100px');
                 //$('#waveform').css('margin-top', '0');
@@ -483,6 +485,8 @@ $(function() {
             if (!mousedown) {
                 $('#slider').val(elapsed);
             }
+            var perc = elapsed/state.duration*100;
+            $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.4) 0%, rgba(255,105,180,0.7) '+(perc-0.5)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
             $('.song-elapsed').html(formatTime(elapsed));
             var total = queue[parseInt(state.song)].time;
             if (state.consume == '0' && state.repeat == '1') {
