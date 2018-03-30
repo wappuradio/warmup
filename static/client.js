@@ -32,8 +32,7 @@ String.prototype.hashCode = function() {
     return hash;
 };
 $(function() {
-    //var wsurl = window.location.href.replace(/^http/, 'ws') + 'ws',
-    var wsurl = 'ws://' + window.location.hostname + ':6681',
+    var wsurl = window.location.href.replace(/^http/, 'ws') + 'ws',
         socket,
         state = {},
         queue = [],
@@ -46,7 +45,7 @@ $(function() {
         custom = '',
         customlist = [],
         playlists = [],
-        locked = true,
+        locked = false,
         hash = 0;
 
     function exec(line) {
@@ -513,7 +512,7 @@ $(function() {
             $('#timeleft').html('');
             $('title').html('&#9632;');
         }
-        window.requestAnimationFrame(slide);
+        setTimeout(function() {window.requestAnimationFrame(slide); }, 250);
     }
     window.requestAnimationFrame(slide);
     $(window).load(function() {
@@ -539,12 +538,12 @@ $(function() {
         });
     });
 
-    $('#controls button, #slider, #tab-queue').attr('disabled', 'disabled');
+    /*$('#controls button, #slider, #tab-queue').attr('disabled', 'disabled');
     $('#unlock').click(function() {
         locked = false;
         $('#controls button, #slider').removeAttr('disabled');
         $('#tab-queue').show();
         $('#lock').hide();
-    });
+    });*/
     init();
 });
