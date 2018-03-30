@@ -46,7 +46,8 @@ $(function() {
         customlist = [],
         playlists = [],
         locked = false,
-        hash = 0;
+        hash = 0,
+        anim;
 
     function exec(line) {
         if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
@@ -167,15 +168,16 @@ $(function() {
                 });
             });
         }
-        if (queue.length > 0 && state.song !== undefined) {
+        if (queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
             hash = queue[state.song].file.hashCode();
-            $('#waveform').css('background-size', '100% 1000%');
-            $('#waveform').css('background-color', '#2e3338');
-            $('#waveform').css('background-image', '')
+            $('#waveform').css('background-size', '100% 500%');
+            //$('#waveform').css('background-color', '#2e3338');
+            //$('#waveform').css('background-image', '')
             $('<img/>').attr('src', 'waveform?' + hash).load(function() {
                 $(this).remove();
                 $('#waveform').css('background-image', 'url(waveform?' + hash + ')');
-                $('#waveform').css('background-color', 'rgba(0,0,0,0.3)');
+                $('#waveform').css('background-color', 'rgba(16, 19, 22, 1)');
+                //$('#waveform').css('background-color', 'rgba(0,0,0,0.3)');
                 $('#waveform').css('background-size', '100% 100%');
             });
             $('#player').fadeIn();
@@ -212,12 +214,16 @@ $(function() {
                 $('#button-play i').removeClass('fa-play fa-stop fa-pause');
                 $('#button-play i').addClass('fa-pause');
                 $('#button-play .text').html('Pause');
+                clearInterval(anim);
+                anim = setInterval(slide, 1000/15);
                 break;
             case 'pause':
             case 'stop':
                 $('#button-play i').removeClass('fa-play fa-stop fa-pause');
                 $('#button-play i').addClass('fa-play');
                 $('#button-play .text').html('Play');
+                clearInterval(anim);
+                slide();
                 break;
             default:
         }
@@ -363,6 +369,16 @@ $(function() {
         }
     });
     $(document).keydown(function(e) {
+        if (e.ctrlKey && e.which > 48 && e.which < 58) {
+            e.preventDefault();
+            $('.button-add')[e.which-49].click();
+            return;
+        }
+        if (e.which > 111 && e.which < 116) {
+            e.preventDefault();
+            $('#control-buttons button')[e.which-112].click();
+            return;
+        }
         if (!$(e.target).is('input')) {
             $('#search').focus();
         }
@@ -466,26 +482,28 @@ $(function() {
             } else if (cmd == 'listplaylist') {
                 console.log('got all playlists');
                 var listname = data.cmd.match(/^listplaylist "(.*)"$/);
-                console.log(listname);
                 listname = listname[1];
                 playlists[listname] = data.msg.toString();
             }
         };
     }
+    //var timestamp = +new Date, anim;
     function slide() {
+        //if (+new Date - timestamp < 1000/15) return;
+        //timestamp = +new Date;
         if (state.state == 'play' && queue.length > 0 && state.song !== undefined && queue[state.song] !== undefined) {
-            //elapsed += 0.1;
             elapsed = parseFloat(state.elapsed) + (new Date() - laststate) / 1000 + 0.5;
             elapsed = Number(elapsed.toFixed(3));
             if (!mousedown) {
                 $('#slider').val(elapsed);
             }
             var perc = elapsed/state.duration*100;
-            $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.7) 0%, rgba(255,105,180,0.7) '+(perc-0.5)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
+            $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.7) 0%, rgba(255,105,180,0.7) '+(perc-0.3)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
             $('.song-elapsed').html(formatTime(elapsed));
             var total = queue[parseInt(state.song)].time;
             if (state.consume == '0' && state.repeat == '1') {
                 $('#timeleft').html('');
+                $('title').html('&#9654;');
                 return;
             } else if (state.single == '0' && state.random == '0' && state.repeat == '0') {
                 total = 0;
@@ -512,9 +530,8 @@ $(function() {
             $('#timeleft').html('');
             $('title').html('&#9632;');
         }
-        setTimeout(function() {window.requestAnimationFrame(slide); }, 250);
     }
-    window.requestAnimationFrame(slide);
+    slide();
     $(window).load(function() {
         $('#queue-table').rowSorter({
             onDrop: function(tbody, row, index, oldIndex) {
