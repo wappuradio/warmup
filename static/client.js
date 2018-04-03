@@ -32,7 +32,8 @@ String.prototype.hashCode = function() {
     return hash;
 };
 $(function() {
-    var wsurl = window.location.href.replace(/^http/, 'ws') + 'ws',
+    //var wsurl = window.location.href.replace(/^http/, 'ws') + 'ws',
+    var wsurl = 'ws://' + window.location.hostname + ':6681',
         socket,
         state = {},
         queue = [],
@@ -251,7 +252,7 @@ $(function() {
             if (tag.length) {
                 tag = '<div class="tag">' + tag.join(', ') + '</div>';
             }
-            $('#results-body').append('<tr><td>' + (1 * i + 1) + '</td><td>' + formatTime(s.time) + '</td><td>' + tag + '<a href="#" class="button-add" data-key="title" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>' + (s.date ? '<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>' : '') + '</td></tr>');
+            $('#results-body').append('<tr><td>' + ( s.track || '' ) + '</td><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-playnow" data-id="' + i + '"><i class="fa fa-md fa-fw fa-play"></i></a></td><td>' + tag + '<a href="#" class="button-add" data-key="title" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>' + (s.date ? '<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>' : '') + '</td></tr>');
         }
         $('#tab-results .text').html('Search results (' + results.length + ')');
     }
@@ -306,6 +307,11 @@ $(function() {
         } else {
             exec('playlistadd "' + $('#playlist').val() + '" "' + results[$(this).data('id')].file + '"');
         }
+    });
+    $('#results-body').on('click', '.button-playnow', function(e) {
+        e.preventDefault();
+        exec('findadd file "' + results[$(this).data('id')].file + '"');
+        exec('play ' + state.playlistlength);
     });
     $('#custom-body').on('click', '.button-add', function(e) {
         e.preventDefault();
