@@ -5,8 +5,8 @@ var config = {
     mpd_host: 'localhost',
     mpd_port: 6600,
     mpd_pass: '',
-    ws_host: 'localhost',
-    ws_port: 6681,
-    music_dir: '/var/lib/mpd/music'
+    music_dir: '/var/lib/mpd/music',
+    whitelist: ['127.0.0.1'],
+    safecommands: ['status', 'find', 'search', 'playlistinfo', 'list', 'listplaylists', 'playlistadd', 'listplaylistinfo', 'listplaylist', 'playlistmove', 'playlistdelete', 'save', 'rm'],
 };
 module.exports = config;

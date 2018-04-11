@@ -32,8 +32,7 @@ String.prototype.hashCode = function() {
     return hash;
 };
 $(function() {
-    //var wsurl = window.location.href.replace(/^http/, 'ws') + 'ws',
-    var wsurl = 'ws://' + window.location.hostname + ':6681',
+    var wsurl = window.location.href.replace(/^http/, 'ws'),
         socket,
         state = {},
         queue = [],

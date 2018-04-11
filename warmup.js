@@ -9,12 +9,13 @@ try {
 var config = require('./config');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
-var WSS = require('uws').Server;
+var expressWs = require('express-uws')(app);
+//var server = require('http').createServer(app);
+/*var WSS = require('uws').Server;
 var wss = new WSS({
     host: config.ws_host,
     port: config.ws_port
-});
+});*/
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
 var mpd, np = {
@@ -33,7 +34,7 @@ var send = function(me, cmd, data) {
 }
 
 var broadcast = function(cmd, data) {
-    wss.clients.forEach(function(me) {
+    expressWs.getWss().clients.forEach(function(me) {
         if (me && me.readyState === 1) {
             var json = JSON.stringify({
                 cmd: cmd,
@@ -156,17 +157,20 @@ app.get('/waveform', function(req, res, next) {
     });
 });
 
-wss.on('connection', function(client, request) {
+//wss.on('connection', function(client, request) {
+app.ws('/', function(ws, req) {
     console.log('Client connected...');
-    client.on('message', function(data) {
-        console.log(data);
-        var cli = client;
-        var sent = data;
-        mpd.sendCommand(data, function(err, msg) {
-            if (err) console.log(err);
-            send(cli, data, msg);
-        });
+    ws.on('message', function(data) {
+        var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+        var cmd = data.split(' ')[0];
+        var cli = ws;
+        if(config.whitelist.indexOf(ip) != -1 || config.safecommands.indexOf(cmd) != -1) {
+            mpd.sendCommand(data, function(err, msg) {
+                if (err) console.log(err);
+                send(cli, data, msg);
+            });
+        }
     });
 });
 
-server.listen(config.http_port);
+app.listen(config.http_port);
