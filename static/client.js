@@ -88,10 +88,13 @@ $(function() {
         return out;
     }
 
-    function updateAlbums(data) {
+    function saveAlbums(data) {
         if (data !== undefined) {
             albums = toArray(data, 'Artist');
         }
+    }
+    
+    function updateAlbums() {
         albums.sort(function(a, b) {
             if(a.artist && b.artist) {
                 return (a.artist.localeCompare(b.artist));
@@ -434,6 +437,9 @@ $(function() {
         }
         exec('seekcur ' + $(this).val());
     });
+    $('#tab-albums').click(function() {
+      updateAlbums();
+    });
 
     function init() {
         socket = new WebSocket(wsurl);
@@ -464,7 +470,7 @@ $(function() {
                 exec('status');
             } else if (cmd == 'list') {
                 console.log('got albums');
-                updateAlbums(data.msg.toString());
+                saveAlbums(data.msg.toString());
             } else if (cmd == 'listplaylists') {
                 console.log('got playlists');
                 updatePlaylists(data.msg.toString());
