@@ -135,7 +135,7 @@ $(function() {
             customTotal += Number(s.time);
             $('#custom-body').append('<tr><th>' + (1 + 1 * i) + ' </th><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-add" data-key="track" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="" class="button-action" data-cmd=\'playlistdelete \"' + custom + '\" ' + i + '\'><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
         }
-        $('#custom-body').append('<tr><td></td><td><strong>' + formatTime(customTotal) + '</strong></td><td colspan="4"></td></tr>');
+        $('#custom-total').html('<div class="total">' + formatTime(customTotal) + '</div>');
         $('#tab-custom .text').html(custom + ' (' + customlist.length + ')');
     }
 
@@ -150,7 +150,7 @@ $(function() {
             queueTotal += Number(s.time);
             $('#queue-body').append('<tr><th>' + (1 + 1 * s.pos) + ' </th><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-action" data-cmd="play ' + s.pos + '"><i class="fa fa-lg fa-fw fa-play-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="#" class="button-action" data-cmd="delete ' + s.pos + '"><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
         }
-        $('#queue-body').append('<tr><td></td><td><strong>' + formatTime(queueTotal) + '</strong></td><td colspan="4"></td></tr>');
+        $('#queue-total').html('<div class="total">' + formatTime(queueTotal) + '</div>');
         $('#tab-queue .text').html('Play queue (' + queue.length + ')');
         updateState();
     }
