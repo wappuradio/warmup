@@ -105,7 +105,7 @@ $(function() {
         $('#albums-body').html('');
         for (var i in albums) {
             var s = albums[i];
-            $('#albums-body').append('<tr><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>' + (s.date ? '<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>' : '') + '</td></tr>');
+            $('#albums-body').append('<tr><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td></tr>');
         }
         $('#tab-albums .text').html('Database (' + albums.length + ')');
     }
@@ -133,7 +133,7 @@ $(function() {
         for (var i in customlist) {
             var s = customlist[i];
             customTotal += Number(s.time);
-            $('#custom-body').append('<tr><th>' + (1 + 1 * i) + ' </th><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-add" data-key="track" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="" class="button-action" data-cmd=\'playlistdelete \"' + custom + '\" ' + i + '\'><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
+            $('#custom-body').append('<tr><th>' + (1 + 1 * i) + ' </th><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-add" data-key="track" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td><a href="" class="button-action" data-cmd=\'playlistdelete \"' + custom + '\" ' + i + '\'><i class="fa fa-trash fa-lg fa-fw"></i></a></td></tr>');
         }
         $('#custom-total').html('<div class="total">' + formatTime(customTotal) + '</div>');
         $('#tab-custom .text').html(custom + ' (' + customlist.length + ')');
@@ -260,7 +260,7 @@ $(function() {
             if (tag.length) {
                 tag = '<div class="tag">' + tag.join(', ') + '</div>';
             }
-            $('#results-body').append('<tr><td>' + ( s.track || '' ) + '</td><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-playnow" data-id="' + i + '"><i class="fa fa-md fa-fw fa-play"></i></a></td><td>' + tag + '<a href="#" class="button-add" data-key="title" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>' + (s.date ? '<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>' : '') + '</td></tr>');
+            $('#results-body').append('<tr><td>' + ( s.track || '' ) + '</td><td>' + formatTime(s.time) + '</td><td><a href="#" class="button-playnow" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-play"></i></a></td><td>' + tag + '<a href="#" class="button-add" data-key="title" data-value="' + s.title + '" data-id="' + i + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> ' + s.title + '</a> </td><td><a href="#" class="button-find" data-key="artist" data-value="' + s.artist + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.artist + '</a> </td><td><a href="#" class="button-find" data-key="album" data-value="' + s.album + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.album + '</a> </td><td>' + (s.date ? '<a href="#" class="button-find" data-key="date" data-value="' + s.date.replace(/-.*/, '') + '"><i class="fa fa-lg fa-fw fa-search"></i> ' + s.date.replace(/-.*/, '') + '</a>' : '') + '</td></tr>');
         }
         $('#tab-results .text').html('Search results (' + results.length + ')');
     }
@@ -364,7 +364,14 @@ $(function() {
         $('#tab-queue').tab('show');
     });
     $('#clear').click(function() {
-        if (confirm('Are you sure? Clearing will stop the current song.')) exec('clear');
+        if (state.state == 'play') {
+        	exec('moveid '+state.songid+' 0');
+        	if(state.playlistlength > 1) {
+        		exec('delete 1:'+state.playlistlength);
+        	}
+        } else {
+        	exec('clear');
+        }
     });
     $('#delete').click(function() {
         if (custom !== '' && confirm('Are you sure you want to delete playlist ' + custom + '?')) {
@@ -446,6 +453,13 @@ $(function() {
     $('#tab-albums').click(function() {
       updateAlbums();
     });
+    $('#playlist').keyup(function() {
+    	if(this.value) {
+    		$('#addall .text').html('Add all to playlist');
+    	} else {
+    		$('#addall .text').html('Queue all');
+    	}
+    });
 
     function init() {
         socket = new WebSocket(wsurl);
@@ -454,7 +468,7 @@ $(function() {
         socket.onopen = function(data) {
             exec('status');
             exec('playlistinfo');
-            exec('list artist group album group date');
+            exec('list album group artist');
             exec('listplaylists');
         };
 
@@ -518,8 +532,8 @@ $(function() {
             $('#waveform').css('background-image', 'url(waveform?' + hash + '), linear-gradient(to right, rgba(70,180,255,0.7) 0%, rgba(255,105,180,0.7) '+(perc-0.3)+'%, rgba(0,0,0,0.3) '+perc+'%, rgba(0,0,0,0.3) 100%)');
             $('.song-elapsed').html(formatTime(elapsed));
             var total = queue[parseInt(state.song)].time;
-            if (state.consume == '0' && state.repeat == '1') {
-                $('#timeleft').html('');
+            if (state.consume == '0' && (state.repeat == '1' || state.random == '1')) {
+                $('#timeleft').html('&infin;');
                 $('title').html('&#9654;');
                 return;
             } else if (state.single == '0' && state.random == '0' && state.repeat == '0') {
@@ -529,7 +543,7 @@ $(function() {
                 }
             } else if (state.single == '1' && state.repeat == '0') {
                 total = queue[parseInt(state.song)].time;
-            } else if (state.consume == '1' && state.random == '1') {
+            } else if (state.random == '1') {
                 total = 0;
                 for (i = 0; i < queue.length; i++) {
                     total += parseInt(queue[i].time);

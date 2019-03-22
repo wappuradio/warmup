@@ -131,6 +131,13 @@ tbody tr:hover, tbody tr.sorting-row {
 	width: 25%;
 }
 
+#control-buttons.btn-group .btn {
+	width: 50%;
+}
+#button-prev, #button-next {
+	display: none;
+}
+
 #control-buttons {
 	padding-right: 70px;
 }
