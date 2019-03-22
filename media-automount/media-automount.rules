@@ -1,0 +1,14 @@
+# -*- conf-unix -*-
+
+# Ever since early systemd-udevd merge, we are forced to use some
+# hack to be able to run long lived processes from udev (which is required for 
+# some filesystems that will spawn some daemon, like ntfs-3g).
+# 
+# udev will kill the running process and all childs after 4-5 seconds, so the
+# mounting has to be done as a separate "service"
+
+# mount the device when added
+KERNEL=="sd[a-z]*[1-9]", ACTION=="add", RUN+="/bin/systemctl restart media-automount@%k.service"
+
+# clean up after device removal
+KERNEL=="sd[a-z]*[1-9]", ACTION=="remove", RUN+="/bin/systemctl restart media-automount@%k.service"

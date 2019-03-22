@@ -1,0 +1,19 @@
+#!/bin/bash
+if [ "$1" = "" ]; then
+  echo "No parameters given"
+  exit 1
+fi
+
+#uuid=$(blkid /dev/$1 | sed -e 's/.* UUID="\([^"]*\)".*/\1/')
+uuid=$(blkid /dev/$1)
+
+if [ "$uuid" != "" ]; then
+  sudo mount -o ro,umask=0227,uid=$(id -u mpd),gid=$(id -g mpd) /dev/$1 /var/lib/mpd/music/usb
+  sleep 1
+  echo "rescan usb" | socat -T1 - TCP4:127.0.0.1:6600
+else
+  sudo umount -fl /var/lib/mpd/music/usb
+  echo "rescan usb" | socat -T1 - TCP4:127.0.0.1:6600
+fi
+
+exit 0
