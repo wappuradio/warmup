@@ -87,6 +87,11 @@ mpd.on('system-stored_playlist', function() {
         broadcast('listplaylists', msg);
     });
 });
+mpd.on('system-database', function() {
+    mpd.sendCommand('count "(base \'usb\')"', function(err, msg) {
+        broadcast('count', msg);
+    });
+});
 
 var auth = function(req, res, next) {
     if (config.http_user === '' && config.http_pass === '') {

@@ -81,7 +81,7 @@ $(function() {
         var reg = new RegExp('^' + sep + ': ', 'gm');
         data = data.split(reg);
         for (var i in data) {
-            if (data[i] !== undefined && data[i].trim() !== '') {
+            if (data[i] !== undefined && data[i].trim() !== '' && i > 0) {
                 out.push(toObject(sep + ': ' + data[i]));
             }
         }
@@ -460,7 +460,11 @@ $(function() {
     		$('#addall .text').html('Queue all');
     	}
     });
-
+    $('#tab-usb').click(function() {
+        var search = 'find "(base \'usb\')"';
+        exec(search);
+        lastsearch = search;
+    });
     function init() {
         socket = new WebSocket(wsurl);
         window.socket = socket;
@@ -470,6 +474,7 @@ $(function() {
             exec('playlistinfo');
             exec('list album group artist');
             exec('listplaylists');
+            exec('count "(base \'usb\')"');
         };
 
         socket.onclose = function(e) {
@@ -515,6 +520,18 @@ $(function() {
                 var listname = data.cmd.match(/^listplaylist "(.*)"$/);
                 listname = listname[1];
                 playlists[listname] = data.msg.toString();
+            } else if (cmd == 'listallinfo') {
+                console.log('got listallinfo');
+                updateResults(data.msg.toString());
+                $('#tab-results').click();
+            } else if (cmd == 'count') {
+                console.log('got count');
+                if(data.msg) {
+                    console.log(data.msg.toString());
+                    $('#tab-usb').show();
+                } else {
+                    $('#tab-usb').hide();
+                }
             }
         };
     }
