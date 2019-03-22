@@ -1,15 +1,15 @@
 {
   "name": "warmup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Wappuradio music player",
   "main": "warmup.js",
   "author": "Dregu",
   "license": "MIT",
   "repository": "https://github.com/Dregu/warmup",
   "dependencies": {
-    "basic-auth": "1",
+    "basic-auth": "2",
     "express": "4",
     "mpd": "1",
-    "uws": "^9.14.0"
+    "uws": "^8.14.1"
   }
 }
