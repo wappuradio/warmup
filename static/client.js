@@ -329,9 +329,9 @@ $(function() {
         e.preventDefault();
         var key = $(this).data('key');
         var value = $(this).data('value');
-        var search = 'find ' + key + ' "' + value + '"';
-        exec(search);
-        $('#search').val(key + ' "' + value + '"');
+        var search = key + ' "' + value + '"';
+        exec('find ' + search);
+        $('#search').val(search);
         lastsearch = search;
     });
     $('#playlists-body').on('click', '.button-queue-list', function(e) {

@@ -74,6 +74,13 @@
 	color: white;
 }
 
+#nowplaying .label, #next .label {
+	text-align: left;
+	display: inline-block;
+	width: 5em;
+	color: #666;
+}
+
 #queue-body tr, #custom-body tr {
 	cursor: move;
 }
@@ -145,6 +152,13 @@ tbody tr:hover, tbody tr.sorting-row {
 #setting-buttons {
 	padding-left: 70px;
 	margin-right: -3px;
+}
+
+#control-buttons .label {
+	position: relative;
+	top: -8px;
+	padding: 0;
+	font-size: 0.6em;
 }
 
 @keyframes curPulse {
@@ -304,5 +318,12 @@ input[type=range]:focus::-ms-fill-upper {
 
 .total {
 	font-weight: bold;
-	margin-left: 30px;
+	margin-left: 38px;
+}
+
+i.single {
+	font-style: normal;
+	font-weight: bold;
+	font-family: monospace;
+	font-size: 1.6em;
 }
