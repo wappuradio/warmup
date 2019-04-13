@@ -139,11 +139,11 @@
 							<button class="btn btn-sm btn-info" id="queueall"><i class="fa fa-plus"></i> Queue all</button>
 							<button class="btn btn-sm btn-danger" id="delete"><i class="fa fa-trash"></i> Delete</button>
 						</div>
-						<table class="table table-striped" id="custom-table">
+						<table class="table table-striped" id="custom-table" data-sortable>
 							<thead>
 								<tr>
-									<th>#</th>
-									<th>Time</th>
+									<th data-sortable-type="numeric">#</th>
+									<th data-sortable-type="numeric">Time</th>
 									<th>Track</th>
 									<th>Artist</th>
 									<th>Album</th>
@@ -158,15 +158,11 @@
 				</div>
 			</div>
 		</div>
-		<!--div id="lock" class="text-center" style="margin-bottom: 20px">
-			<button id="unlock" class="btn btn-danger"><i class="fa fa-unlock-alt"></i> I know what I'm doing, unlock controls!</button>
-		</div-->
-		<div </div>
-			<script src="jquery/dist/jquery.min.js"></script>
-			<script src="bootstrap/dist/js/bootstrap.min.js"></script>
-			<script src="jquery.rowsorter.js"></script>
-			<script src="sortable/js/sortable.min.js"></script>
-			<script src="client.js"></script>
+		<script src="jquery/dist/jquery.min.js"></script>
+		<script src="bootstrap/dist/js/bootstrap.min.js"></script>
+		<script src="jquery.rowsorter.js"></script>
+		<script src="sortable/js/sortable.min.js"></script>
+		<script src="client.js"></script>
 </body>
 
 </html>
