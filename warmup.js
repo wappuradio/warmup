@@ -168,7 +168,7 @@ app.ws('/', function(ws, req) {
     console.log('Client connected...');
     ws.on('message', function(data) {
         var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-	var trustedHosts = ['127.0.0.1'];
+	var trustedHosts = ['127.0.0.1', '::1'];
 	var forwardedFor = req.headers['x-forwarded-for'];
 
 	if(trustedHosts.indexOf(ip) != -1 && forwardedFor) {
