@@ -168,13 +168,12 @@ app.ws('/', function(ws, req) {
     console.log('Client connected...');
     ws.on('message', function(data) {
         var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-	var trustedHosts = ['127.0.0.1', '::1'];
-	var forwardedFor = req.headers['x-forwarded-for'];
+        var forwardedFor = req.headers['x-forwarded-for'];
 
-	if(trustedHosts.indexOf(ip) != -1 && forwardedFor) {
-		// Use the original IP provided by a trusted proxy
-		ip = forwardedFor;
-	}
+        if(config.trusted_proxies.indexOf(ip) != -1 && forwardedFor) {
+            // Use the original IP provided by a trusted proxy
+            ip = forwardedFor;
+        }
 
         var cmd = data.split(' ')[0];
         var cli = ws;
