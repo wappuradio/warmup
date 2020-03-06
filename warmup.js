@@ -22,6 +22,7 @@ var mpd, np = {
     song: ''
 };
 var spawn = require('child_process').spawn;
+var ipRangeCheck = require("ip-range-check");
 
 var send = function(me, cmd, data) {
     if (me && me.readyState === 1) {
@@ -167,9 +168,16 @@ app.ws('/', function(ws, req) {
     console.log('Client connected...');
     ws.on('message', function(data) {
         var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+        var forwardedFor = req.headers['x-forwarded-for'];
+
+        if(config.trusted_proxies.indexOf(ip) != -1 && forwardedFor) {
+            // Use the original IP provided by a trusted proxy
+            ip = forwardedFor;
+        }
+
         var cmd = data.split(' ')[0];
         var cli = ws;
-        if(config.whitelist.indexOf(ip) != -1 || config.safecommands.indexOf(cmd) != -1) {
+        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1) {
             mpd.sendCommand(data, function(err, msg) {
                 if (err) console.log(err);
                 send(cli, data, msg);
