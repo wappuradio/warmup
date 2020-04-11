@@ -191,7 +191,7 @@ app.ws('/', function(ws, req) {
             }
         }
 
-        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
+        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
             mpd.sendCommand(data, function(err, msg) {
                 if (err) console.log(err);
                 send(cli, data, msg);
