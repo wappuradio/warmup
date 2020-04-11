@@ -167,17 +167,31 @@ app.get('/waveform', function(req, res, next) {
 app.ws('/', function(ws, req) {
     console.log('Client connected...');
     ws.on('message', function(data) {
-        var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-        var forwardedFor = req.headers['x-forwarded-for'];
-
-        if(config.trusted_proxies.indexOf(ip) != -1 && forwardedFor) {
-            // Use the original IP provided by a trusted proxy
-            ip = forwardedFor;
-        }
-
         var cmd = data.split(' ')[0];
         var cli = ws;
-        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1) {
+
+        var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+        var proxyForwardedFor = req.headers['x-forwarded-for'];
+        var proxyAllowControl = req.headers['allow-control'];
+
+        console.log(`Request from ${ip}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${cmd}`);
+
+        if(config.trusted_proxies.indexOf(ip) != -1 && proxyForwardedFor) {
+            // Use the original IP provided by a trusted proxy
+            ip = proxyForwardedFor;
+        }
+
+        var allowControl = false;
+        if(config.trusted_proxies.indexOf(ip) != -1 && proxyAllowControl) {
+            if (proxyAllowControl === 'deny') {
+                return;
+            }
+            if (proxyAllowControl === 'permit') {
+                allowControl = true;
+            }
+        }
+
+        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
             mpd.sendCommand(data, function(err, msg) {
                 if (err) console.log(err);
                 send(cli, data, msg);
