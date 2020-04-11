@@ -170,19 +170,22 @@ app.ws('/', function(ws, req) {
         var cmd = data.split(' ')[0];
         var cli = ws;
 
-        var ip = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+        var clientIp = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
         var proxyForwardedFor = req.headers['x-forwarded-for'];
         var proxyAllowControl = req.headers['allow-control'];
 
-        console.log(`Request from ${ip}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${cmd}`);
+        console.log(`Request from ${clientIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${cmd}`);
 
-        if(config.trusted_proxies.indexOf(ip) != -1 && proxyForwardedFor) {
+        var realIp;
+        if(config.trusted_proxies.indexOf(clientIp) != -1 && proxyForwardedFor) {
             // Use the original IP provided by a trusted proxy
-            ip = proxyForwardedFor;
+            realIp = proxyForwardedFor;
+        } else {
+            realIp = clientIp;
         }
 
         var allowControl = false;
-        if(config.trusted_proxies.indexOf(ip) != -1 && proxyAllowControl) {
+        if(config.trusted_proxies.indexOf(clientIp) != -1 && proxyAllowControl) {
             if (proxyAllowControl === 'deny') {
                 return;
             }
@@ -191,7 +194,7 @@ app.ws('/', function(ws, req) {
             }
         }
 
-        if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
+        if(ipRangeCheck(realIp, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
             mpd.sendCommand(data, function(err, msg) {
                 if (err) console.log(err);
                 send(cli, data, msg);
