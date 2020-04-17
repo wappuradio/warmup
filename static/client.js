@@ -480,6 +480,9 @@ $(function() {
         socket.onclose = function(e) {
             setTimeout(init, 500);
         };
+        socket.onerror = function(e) {
+	    console.log(e);
+        };
 
         socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
