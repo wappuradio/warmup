@@ -118,7 +118,9 @@ $(function() {
         $('#playlists-body').html('');
         for (var i in lists) {
             var s = lists[i];
-            exec('listplaylist "' + s.playlist + '"');
+            if (!playlists.length) {
+                exec('listplaylist "' + s.playlist + '"');
+            }
             $('#playlists-body').append('<tr><td><a href="#" class="button-edit-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-pencil"></i> ' + s.playlist + ' </td><td>' + s['last-modified'] + '</td><td><a href="#" class="button-queue-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> Queue all</a></td></tr>');
         }
         $('#tab-playlists .text').html('Saved playlists (' + lists.length + ')');
