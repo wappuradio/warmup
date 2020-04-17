@@ -163,7 +163,31 @@ app.get('/waveform', function(req, res, next) {
     });
 });
 
-//wss.on('connection', function(client, request) {
+function updatePlaylist(listName) {
+    const cmd = `listplaylist ${listName}`;
+    mpd.sendCommand(cmd, (err, msg) => {
+        broadcast(cmd, msg);
+    });
+}
+
+function handleCommand(cli, data) {
+    const requestTime = new Date().getTime();
+    var cmd = data.split(' ')[0];
+
+    mpd.sendCommand(data, function(err, msg) {
+        if (err) console.log(err);
+        send(cli, data, msg);
+
+        const responseDelay = new Date().getTime() - requestTime;
+        console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
+
+        if (cmd.startsWith('playlist')) { // playlistadd/move/delete/etc.
+            const listName = data.split(' ')[1];
+            updatePlaylist(listName);
+        }
+    });
+}
+
 app.ws('/', function(ws, req) {
     console.log('Client connected...');
     ws.on('message', function(data) {
@@ -194,15 +218,10 @@ app.ws('/', function(ws, req) {
             }
         }
 
-        const requestTime = new Date().getTime();
-
         if(ipRangeCheck(realIp, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
-            mpd.sendCommand(data, function(err, msg) {
-                if (err) console.log(err);
-                send(cli, data, msg);
-                const responseDelay = new Date().getTime() - requestTime;
-                console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
-            });
+            handleCommand(cli, data);
+        } else {
+            console.log('Denied');
         }
     });
 });

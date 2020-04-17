@@ -44,7 +44,7 @@ $(function() {
         mousedown = false,
         custom = '',
         customlist = [],
-        playlists = [],
+        playlists = {},
         locked = false,
         hash = 0,
         anim;
@@ -114,11 +114,12 @@ $(function() {
         if (data === undefined) {
             return;
         }
+        const playlistsUninitialized = Object.keys(playlists).length == 0;
         var lists = toArray(data, 'playlist');
         $('#playlists-body').html('');
         for (var i in lists) {
             var s = lists[i];
-            if (!playlists.length) {
+            if (playlistsUninitialized) {
                 exec('listplaylist "' + s.playlist + '"');
             }
             $('#playlists-body').append('<tr><td><a href="#" class="button-edit-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-pencil"></i> ' + s.playlist + ' </td><td>' + s['last-modified'] + '</td><td><a href="#" class="button-queue-list" data-name="' + s.playlist + '"><i class="fa fa-lg fa-fw fa-plus-circle"></i> Queue all</a></td></tr>');
