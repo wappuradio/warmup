@@ -174,7 +174,7 @@ app.ws('/', function(ws, req) {
         var proxyForwardedFor = req.headers['x-forwarded-for'];
         var proxyAllowControl = req.headers['allow-control'];
 
-        console.log(`Request from ${clientIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${cmd}`);
+        console.log(`Request from ${clientIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${data}`);
 
         var realIp;
         if(config.trusted_proxies.indexOf(clientIp) != -1 && proxyForwardedFor) {
@@ -194,10 +194,14 @@ app.ws('/', function(ws, req) {
             }
         }
 
+        const requestTime = new Date().getTime();
+
         if(ipRangeCheck(realIp, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
             mpd.sendCommand(data, function(err, msg) {
                 if (err) console.log(err);
                 send(cli, data, msg);
+                const responseDelay = new Date().getTime() - requestTime;
+                console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
             });
         }
     });
