@@ -181,7 +181,7 @@ function handleCommand(cli, data) {
         const responseDelay = new Date().getTime() - requestTime;
         console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
 
-        if (cmd.startsWith('playlist')) { // playlistadd/move/delete/etc.
+        if (cmd.startsWith('playlist') && cmd != 'playlistinfo') { // playlistadd/move/delete/etc.
             const listName = data.split(' ')[1];
             updatePlaylist(listName);
         }
