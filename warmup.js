@@ -204,13 +204,7 @@ app.ws('/', function(ws, req) {
     const socketIp = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
     const clientIp = getClientIp(ws, proxyForwardedFor);
 
-    let allowControl = false;
-    if(isTrustedProxy(ws) && proxyAllowControl) {
-        if (proxyAllowControl === 'permit') {
-            allowControl = true;
-        }
-    }
-
+    const allowControl = isTrustedProxy(ws) && proxyAllowControl === 'permit';
     const isWhitelisted = ipRangeCheck(clientIp, config.whitelist);
 
     // Whitelisted clients get a free pass
