@@ -182,14 +182,12 @@ function handleCommand(cli, data) {
     });
 }
 
-function isTrustedProxy(ws) {
-    const socketIp  = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+function isTrustedProxy(socketIp) {
     return config.trusted_proxies.indexOf(socketIp) != -1;
 }
 
-function getClientIp(ws, proxyForwardedFor) {
-    const socketIp  = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-    if(isTrustedProxy(ws) && proxyForwardedFor) {
+function getClientIp(socketIp, proxyForwardedFor) {
+    if(isTrustedProxy(socketIp) && proxyForwardedFor) {
         return proxyForwardedFor;
     } else {
         return socketIp;
@@ -202,9 +200,9 @@ app.ws('/', function(ws, req) {
     const websocketProtocol = req.headers['sec-websocket-protocol'];
 
     const socketIp = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-    const clientIp = getClientIp(ws, proxyForwardedFor);
+    const clientIp = getClientIp(socketIp, proxyForwardedFor);
 
-    const allowControl = isTrustedProxy(ws) && proxyAllowControl === 'permit';
+    const allowControl = isTrustedProxy(socketIp) && proxyAllowControl === 'permit';
     const isWhitelisted = ipRangeCheck(clientIp, config.whitelist);
 
     // Whitelisted clients get a free pass
@@ -219,7 +217,7 @@ app.ws('/', function(ws, req) {
         const cmd = data.split(' ')[0];
         const isSafe = config.safecommands.indexOf(cmd) != -1;
 
-        console.log(`Request from ${clientIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${data}`);
+        console.log(`Request from ${socketIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${data}`);
 
         if(isSafe || isWhitelisted || allowControl) {
             handleCommand(ws, data);
