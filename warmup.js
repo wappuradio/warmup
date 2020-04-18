@@ -10,12 +10,6 @@ var config = require('./config');
 var express = require('express');
 var app = express();
 var expressWs = require('express-uws')(app);
-//var server = require('http').createServer(app);
-/*var WSS = require('uws').Server;
-var wss = new WSS({
-    host: config.ws_host,
-    port: config.ws_port
-});*/
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
 var mpd, np = {
@@ -188,38 +182,53 @@ function handleCommand(cli, data) {
     });
 }
 
-app.ws('/', function(ws, req) {
-    console.log('Client connected...');
-    ws.on('message', function(data) {
-        var cmd = data.split(' ')[0];
-        var cli = ws;
+function isTrustedProxy(ws) {
+    const socketIp  = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+    return config.trusted_proxies.indexOf(socketIp) != -1;
+}
 
-        var clientIp = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
-        var proxyForwardedFor = req.headers['x-forwarded-for'];
-        var proxyAllowControl = req.headers['allow-control'];
+function getClientIp(ws, proxyForwardedFor) {
+    const socketIp  = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+    if(isTrustedProxy(ws) && proxyForwardedFor) {
+        return proxyForwardedFor;
+    } else {
+        return socketIp;
+    }
+}
+
+app.ws('/', function(ws, req) {
+    const proxyForwardedFor = req.headers['x-forwarded-for'];
+    const proxyAllowControl = req.headers['allow-control'];
+    const websocketProtocol = req.headers['sec-websocket-protocol'];
+
+    const socketIp = ws._socket.remoteAddress.replace(/^::ffff:/i, '');
+    const clientIp = getClientIp(ws, proxyForwardedFor);
+
+    let allowControl = false;
+    if(isTrustedProxy(ws) && proxyAllowControl) {
+        if (proxyAllowControl === 'permit') {
+            allowControl = true;
+        }
+    }
+
+    const isWhitelisted = ipRangeCheck(clientIp, config.whitelist);
+
+    // Whitelisted clients get a free pass
+    if (!isWhitelisted && websocketProtocol != "warmup1") {
+        // Drop clients with incompatible protocol version
+        return ws.close();
+    }
+
+    console.log('Client connected...');
+
+    ws.on('message', function(data) {
+        const cmd = data.split(' ')[0];
+        const isSafe = config.safecommands.indexOf(cmd) != -1;
 
         console.log(`Request from ${clientIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${data}`);
 
-        var realIp;
-        if(config.trusted_proxies.indexOf(clientIp) != -1 && proxyForwardedFor) {
-            // Use the original IP provided by a trusted proxy
-            realIp = proxyForwardedFor;
-        } else {
-            realIp = clientIp;
-        }
-
-        var allowControl = false;
-        if(config.trusted_proxies.indexOf(clientIp) != -1 && proxyAllowControl) {
-            if (proxyAllowControl === 'deny') {
-                return;
-            }
-            if (proxyAllowControl === 'permit') {
-                allowControl = true;
-            }
-        }
-
-        if(ipRangeCheck(realIp, config.whitelist) || config.safecommands.indexOf(cmd) != -1 || allowControl) {
-            handleCommand(cli, data);
+        if(isSafe || isWhitelisted || allowControl) {
+            handleCommand(ws, data);
         } else {
             console.log('Denied');
         }

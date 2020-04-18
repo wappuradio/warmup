@@ -469,7 +469,7 @@ $(function() {
         lastsearch = search;
     });
     function init() {
-        socket = new WebSocket(wsurl);
+        socket = new WebSocket(wsurl, ['warmup1']);
         window.socket = socket;
 
         socket.onopen = function(data) {
