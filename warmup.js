@@ -157,8 +157,11 @@ app.get('/waveform', function(req, res, next) {
     });
 });
 
-function updatePlaylist(listName) {
-    const cmd = `listplaylist ${listName}`;
+/**
+ * Request playlist contents from MPD and broadcast to all clients
+ */
+function updatePlaylist(listNameQuoted) {
+    const cmd = `listplaylist ${listNameQuoted}`;
     mpd.sendCommand(cmd, (err, msg) => {
         broadcast(cmd, msg);
     });
@@ -175,9 +178,13 @@ function handleCommand(cli, data) {
         const responseDelay = new Date().getTime() - requestTime;
         console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
 
-        if (cmd.startsWith('playlist') && cmd != 'playlistinfo') { // playlistadd/move/delete/etc.
-            const listName = data.split(' ')[1];
-            updatePlaylist(listName);
+        if (cmd.startsWith('playlist') && cmd != 'playlistinfo') {
+            // playlistadd/move/delete/etc. Likely caused a list to change so
+            // broadcast the new list to other clients
+
+            // Extract the first quoted argument, quotes included
+            const listNameQuoted = data.match(/^playlist[^ ]+ ("[^"]+")/)[1];
+            updatePlaylist(listNameQuoted);
         }
     });
 }
