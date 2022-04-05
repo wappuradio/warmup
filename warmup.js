@@ -146,7 +146,7 @@ app.get('/waveform', function(req, res, next) {
     mpd.sendCommand('currentsong', function(err, msg) {
         res.setHeader('cache-control', 'no-cache');
         if (err) {
-            res.status(400)
+            res.status(400);
             res.send(msg);
             return;
         }
@@ -161,6 +161,11 @@ app.get('/waveform', function(req, res, next) {
             })
         }
     });
+});
+app.get('/addrandom', function(req, res, next) {
+    spawn('sh', ['-c', 'mpc listall | shuf -n 1 | mpc add']);
+    res.send('ok');
+    return;
 });
 
 //wss.on('connection', function(client, request) {
