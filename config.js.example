@@ -7,7 +7,7 @@ var config = {
     mpd_pass: '',
     music_dir: '/var/lib/mpd/music',
     whitelist: ['127.0.0.1'],
-    trusted_proxy: ['127.0.0.1', '::1'],
-    safecommands: ['status', 'find', 'search', 'playlistinfo', 'list', 'listplaylists', 'playlistadd', 'listplaylistinfo', 'listplaylist', 'playlistmove', 'playlistdelete', 'save', 'rm'],
+    trusted_proxies: ['127.0.0.1', '::1'],
+    safecommands: ['status', 'find', 'search', 'playlistinfo', 'playlistclear', 'list', 'listplaylists', 'playlistadd', 'listplaylistinfo', 'listplaylist', 'playlistmove', 'playlistdelete', 'save', 'rm'],
 };
 module.exports = config;

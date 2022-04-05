@@ -50,7 +50,7 @@ $(function() {
         anim;
 
     function exec(line) {
-        if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
+        if (locked && !line.split(' ')[0].match(/^(status|find|search|playlistinfo|playlistclear|list|listplaylists|playlistadd|listplaylistinfo|listplaylist|playlistmove|playlistdelete|save|rm)$/gm)) {
             console.log('Blocked: ' + line);
             return;
         }
@@ -357,6 +357,15 @@ $(function() {
         var name = prompt('Save playlist as');
         if (name) {
             exec('save "' + name + '"');
+        }
+    });
+    $('#newplaylist').click(function() {
+        var name = prompt('Create new playlist with the name');
+        if (name) {
+            // Save the current queue and empty the created playlist,
+            // as there is no command to create an empty playlist.
+            exec('save "' + name + '"');
+            exec('playlistclear "' + name + '"');
         }
     });
     $('#shuffle').click(function() {
