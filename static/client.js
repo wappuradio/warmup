@@ -350,6 +350,9 @@ $(function() {
             exec('listplaylistinfo "' + custom + '"');
         }
     });
+    $('#addrandom').click(function() {
+        exec('addrandom');
+    });
     $('#save').click(function() {
         var name = prompt('Save playlist as');
         if (name) {

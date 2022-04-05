@@ -162,11 +162,6 @@ app.get('/waveform', function(req, res, next) {
         }
     });
 });
-app.get('/addrandom', function(req, res, next) {
-    spawn('sh', ['-c', 'mpc listall | shuf -n 1 | mpc add']);
-    res.send('ok');
-    return;
-});
 
 //wss.on('connection', function(client, request) {
 app.ws('/', function(ws, req) {
@@ -183,10 +178,14 @@ app.ws('/', function(ws, req) {
         var cmd = data.split(' ')[0];
         var cli = ws;
         if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1) {
-            mpd.sendCommand(data, function(err, msg) {
-                if (err) console.log(err);
-                send(cli, data, msg);
-            });
+            if (cmd == 'addrandom') {
+                spawn('sh', ['-c', 'mpc listall | shuf -n 1 | mpc add']);
+            } else {
+                mpd.sendCommand(data, function(err, msg) {
+                    if (err) console.log(err);
+                    send(cli, data, msg);
+                });
+            }
         }
     });
 });
