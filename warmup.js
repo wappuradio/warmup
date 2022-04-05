@@ -179,14 +179,7 @@ app.ws('/', function(ws, req) {
         var cli = ws;
         if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1) {
             if (cmd == 'addrandom') {
-                mpd.sendCommand('listall', function(err, msg) {
-                    var list = msg.split('\n');
-                    var song = list[Math.floor(Math.random()*list.length)];
-                    song = song.substr(6);
-                    mpd.sendCommand('add "' + song + '"', function(err, msg) {
-                        if (err) console.log(err);
-                    });
-                });
+                spawn('sh', ['-c', 'mpc listall | shuf -n 1 | mpc add']);
             } else {
                 mpd.sendCommand(data, function(err, msg) {
                     if (err) console.log(err);
