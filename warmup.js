@@ -179,7 +179,8 @@ app.ws('/', function(ws, req) {
         var cli = ws;
         if(ipRangeCheck(ip, config.whitelist) || config.safecommands.indexOf(cmd) != -1) {
             if (cmd == 'addrandom') {
-                spawn('sh', ['-c', 'mpc listall | shuf -n 1 | mpc add']);
+                var mpd_conf = 'export MPD_PORT=' + config.mpd_port + ';export MPD_HOST=' + (config.mpd_pass != '' ? config.mpd_pass + '@' : '') + config.mpd_host + ';';
+                spawn('sh', ['-c', mpd_conf + 'mpc listall | shuf -n 1 | mpc add']);
             } else {
                 mpd.sendCommand(data, function(err, msg) {
                     if (err) console.log(err);
