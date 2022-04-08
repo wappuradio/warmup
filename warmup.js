@@ -140,7 +140,7 @@ app.get('/waveform', function(req, res, next) {
     mpd.sendCommand('currentsong', function(err, msg) {
         res.setHeader('cache-control', 'no-cache');
         if (err) {
-            res.status(400)
+            res.status(400);
             res.send(msg);
             return;
         }
@@ -171,22 +171,27 @@ function handleCommand(cli, data) {
     const requestTime = new Date().getTime();
     var cmd = data.split(' ')[0];
 
-    mpd.sendCommand(data, function(err, msg) {
-        if (err) console.log(err);
-        send(cli, data, msg);
+    if (cmd == 'addrandom') {
+        var mpd_conf = 'export MPD_PORT=' + config.mpd_port + ';export MPD_HOST=' + (config.mpd_pass != '' ? config.mpd_pass + '@' : '') + config.mpd_host + ';';
+        spawn('sh', ['-c', mpd_conf + 'mpc listall | shuf -n 1 | mpc add']);
+    } else {
+        mpd.sendCommand(data, function(err, msg) {
+           if (err) console.log(err);
+            send(cli, data, msg);
 
-        const responseDelay = new Date().getTime() - requestTime;
-        console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
+            const responseDelay = new Date().getTime() - requestTime;
+            console.log(`MPD responded to ${cmd} in ${responseDelay} ms`);
 
-        if (cmd.startsWith('playlist') && cmd != 'playlistinfo') {
-            // playlistadd/move/delete/etc. Likely caused a list to change so
-            // broadcast the new list to other clients
+            if (cmd.startsWith('playlist') && cmd != 'playlistinfo') {
+                // playlistadd/move/delete/etc. Likely caused a list to change so
+                // broadcast the new list to other clients
 
-            // Extract the first quoted argument, quotes included
-            const listNameQuoted = data.match(/^playlist[^ ]+ ("[^"]+")/)[1];
-            updatePlaylist(listNameQuoted);
-        }
-    });
+                // Extract the first quoted argument, quotes included
+                const listNameQuoted = data.match(/^playlist[^ ]+ ("[^"]+")/)[1];
+                updatePlaylist(listNameQuoted);
+            }
+        });
+    }
 }
 
 function isTrustedProxy(socketIp) {
