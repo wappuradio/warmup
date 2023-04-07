@@ -335,7 +335,7 @@ $(function() {
         var search = key + ' "' + value + '"';
         exec('find ' + search);
         $('#search').val(search);
-        lastsearch = search;
+        lastsearch = 'find ' + search;
     });
     $('#playlists-body').on('click', '.button-queue-list', function(e) {
         e.preventDefault();
