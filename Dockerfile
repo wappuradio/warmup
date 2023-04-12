@@ -1,7 +1,7 @@
 FROM docker.io/debian:buster
 
 RUN apt-get update \
- && apt-get install -y curl gcc libsndfile1 \
+ && apt-get install -y curl gcc libsndfile1 mpc \
  && curl -fsSL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get install -y nodejs=8.17.0-1nodesource1
 
