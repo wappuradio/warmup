@@ -1,18 +1,13 @@
 FROM docker.io/debian:buster
 
 RUN apt-get update \
- && apt-get install -y curl gcc libsndfile1 mpc \
- && curl -fsSL https://deb.nodesource.com/setup_8.x | bash - \
- && apt-get install -y nodejs=8.17.0-1nodesource1
-
-# Binaries stolen from debian8
-COPY wav2png/*so* /usr/local/lib
-COPY wav2png/wav2png /usr/local/bin
-RUN ldconfig
+    && apt-get install -y curl mpc ffmpeg \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs=20.0.0-deb-1nodesource1
 
 RUN useradd warmup \
- && mkdir /home/warmup \
- && chown warmup /home/warmup
+    && mkdir /home/warmup \
+    && chown warmup /home/warmup
 
 WORKDIR /home/warmup
 COPY --chown=warmup . .

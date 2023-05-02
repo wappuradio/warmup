@@ -9,7 +9,7 @@ try {
 var config = require('./config');
 var express = require('express');
 var app = express();
-var expressWs = require('express-uws')(app);
+var expressWs = require('express-ws')(app);
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
 var mpd, np = {
@@ -148,9 +148,9 @@ app.get('/waveform', function(req, res, next) {
         var filereg = /^file: (.*)$/gm;
         var file = filereg.exec(msg);
         if (file !== null) {
-            var waveform = spawn('wav2png', ['-w', '1800', '-h', '100', '-b', '2e3338ff', '-f', '00000000', '-o', '/tmp/waveform.png', config.music_dir + '/' + file[1]]);
-            waveform.on('close', function(code) {
-                console.log('wav2png exited with code ' + code)
+            var waveform = spawn('ffmpeg', ['-y', '-i', config.music_dir + '/' + file[1], '-filter_complex', '[0:a]showwavespic=s=1800x200:scale=cbrt:colors=white,negate[a];color=#2e3338:1800x200[c];[c][a]alphamerge', '-frames:v', '1', '/tmp/waveform.png']);
+            waveform.on('close', function (code) {
+                console.log('ffmpeg exited with code ' + code)
                 res.sendFile('/tmp/waveform.png');
             })
         }
