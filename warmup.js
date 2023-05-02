@@ -149,7 +149,7 @@ app.get('/waveform', function (req, res, next) {
         var filereg = /^file: (.*)$/gm;
         var file = filereg.exec(msg);
         if (file !== null) {
-            var waveform = spawn('ffmpeg', ['-y', '-i', config.music_dir + '/' + file[1], '-filter_complex', '[0:a]aformat=channel_layouts=mono,compand=gain=-6,showwavespic=s=1800x200:scale=cbrt:colors=white,negate[a];color=#2e3338:1800x200[c];[c][a]alphamerge', '-frames:v', '1', '/tmp/waveform.png']);
+            var waveform = spawn('ffmpeg', ['-y', '-i', config.music_dir + '/' + file[1], '-filter_complex', '[0:a]aformat=channel_layouts=mono,showwavespic=s=1800x200:scale=log:colors=white,negate[a];color=#2e3338:1800x200[c];[c][a]alphamerge', '-frames:v', '1', '/tmp/waveform.png']);
             waveform.on('close', function (code) {
                 console.log('ffmpeg exited with code ' + code)
                 res.sendFile('/tmp/waveform.png');
