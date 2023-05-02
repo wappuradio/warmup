@@ -9,7 +9,7 @@ try {
 var config = require('./config');
 var express = require('express');
 var app = express();
-var expressWs = require('express-uws')(app);
+var expressWs = require('express-ws')(app);
 var Mpd = require('mpd');
 var basicAuth = require('basic-auth');
 var mpd, np = {
@@ -18,7 +18,7 @@ var mpd, np = {
 var spawn = require('child_process').spawn;
 var ipRangeCheck = require("ip-range-check");
 
-var send = function(me, cmd, data) {
+var send = function (me, cmd, data) {
     if (me && me.readyState === 1) {
         var json = JSON.stringify({
             cmd: cmd,
@@ -28,8 +28,8 @@ var send = function(me, cmd, data) {
     }
 }
 
-var broadcast = function(cmd, data) {
-    expressWs.getWss().clients.forEach(function(me) {
+var broadcast = function (cmd, data) {
+    expressWs.getWss().clients.forEach(function (me) {
         if (me && me.readyState === 1) {
             var json = JSON.stringify({
                 cmd: cmd,
@@ -44,51 +44,51 @@ mpd = Mpd.connect({
     host: config.mpd_host,
     port: config.mpd_port
 });
-mpd.on('error', function(err) {
+mpd.on('error', function (err) {
     console.log(err);
 });
-mpd.on('end', function() {
+mpd.on('end', function () {
     console.log('MPD disconnected, quitting');
     process.exit(0);
 });
-mpd.on('connect', function() {
+mpd.on('connect', function () {
     console.log('MPD connected');
 });
-mpd.on('ready', function() {
+mpd.on('ready', function () {
     console.log('MPD ready');
     if (config.mpd_pass !== '') {
-        mpd.sendCommand('password ' + config.mpd_pass, function(err, msg) {
+        mpd.sendCommand('password ' + config.mpd_pass, function (err, msg) {
             console.log(msg);
         });
     }
 });
-mpd.on('system-player', function() {
-    mpd.sendCommand('status', function(err, msg) {
+mpd.on('system-player', function () {
+    mpd.sendCommand('status', function (err, msg) {
         broadcast('status', msg);
     });
 });
-mpd.on('system-options', function() {
-    mpd.sendCommand('status', function(err, msg) {
+mpd.on('system-options', function () {
+    mpd.sendCommand('status', function (err, msg) {
         broadcast('status', msg);
     });
 });
-mpd.on('system-playlist', function() {
-    mpd.sendCommand('playlistinfo', function(err, msg) {
+mpd.on('system-playlist', function () {
+    mpd.sendCommand('playlistinfo', function (err, msg) {
         broadcast('playlistinfo', msg);
     });
 });
-mpd.on('system-stored_playlist', function() {
-    mpd.sendCommand('listplaylists', function(err, msg) {
+mpd.on('system-stored_playlist', function () {
+    mpd.sendCommand('listplaylists', function (err, msg) {
         broadcast('listplaylists', msg);
     });
 });
-mpd.on('system-database', function() {
-    mpd.sendCommand('count "(base \'usb\')"', function(err, msg) {
+mpd.on('system-database', function () {
+    mpd.sendCommand('count "(base \'usb\')"', function (err, msg) {
         broadcast('count', msg);
     });
 });
 
-var auth = function(req, res, next) {
+var auth = function (req, res, next) {
     if (config.http_user === '' && config.http_pass === '') {
         return next();
     }
@@ -113,11 +113,11 @@ var auth = function(req, res, next) {
 
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/static'));
-app.get('/', auth, function(req, res, next) {
+app.get('/', auth, function (req, res, next) {
     res.sendFile(__dirname + '/index.html');
 });
-app.get('/np', function(req, res, next) {
-    mpd.sendCommand('currentsong', function(err, msg) {
+app.get('/np', function (req, res, next) {
+    mpd.sendCommand('currentsong', function (err, msg) {
         res.setHeader('cache-control', 'no-cache');
         res.setHeader('content-type', 'text/plain; charset=utf-8');
         if (err) {
@@ -136,8 +136,9 @@ app.get('/np', function(req, res, next) {
         res.send(np.song);
     });
 });
-app.get('/waveform', function(req, res, next) {
-    mpd.sendCommand('currentsong', function(err, msg) {
+
+app.get('/waveform', function (req, res, next) {
+    mpd.sendCommand('currentsong', function (err, msg) {
         res.setHeader('cache-control', 'no-cache');
         if (err) {
             res.status(400);
@@ -148,9 +149,9 @@ app.get('/waveform', function(req, res, next) {
         var filereg = /^file: (.*)$/gm;
         var file = filereg.exec(msg);
         if (file !== null) {
-            var waveform = spawn('wav2png', ['-w', '1800', '-h', '100', '-b', '2e3338ff', '-f', '00000000', '-o', '/tmp/waveform.png', config.music_dir + '/' + file[1]]);
-            waveform.on('close', function(code) {
-                console.log('wav2png exited with code ' + code)
+            var waveform = spawn('ffmpeg', ['-y', '-i', config.music_dir + '/' + file[1], '-filter_complex', '[0:a]aformat=channel_layouts=mono,compand=gain=-6,showwavespic=s=1800x200:scale=cbrt:colors=white,negate[a];color=#2e3338:1800x200[c];[c][a]alphamerge', '-frames:v', '1', '/tmp/waveform.png']);
+            waveform.on('close', function (code) {
+                console.log('ffmpeg exited with code ' + code)
                 res.sendFile('/tmp/waveform.png');
             })
         }
@@ -175,8 +176,8 @@ function handleCommand(cli, data) {
         var mpd_conf = 'export MPD_PORT=' + config.mpd_port + ';export MPD_HOST=' + (config.mpd_pass != '' ? config.mpd_pass + '@' : '') + config.mpd_host + ';';
         spawn('sh', ['-c', mpd_conf + 'mpc listall | shuf -n 1 | mpc add']);
     } else {
-        mpd.sendCommand(data, function(err, msg) {
-           if (err) console.log(err);
+        mpd.sendCommand(data, function (err, msg) {
+            if (err) console.log(err);
             send(cli, data, msg);
 
             const responseDelay = new Date().getTime() - requestTime;
@@ -199,14 +200,14 @@ function isTrustedProxy(socketIp) {
 }
 
 function getClientIp(socketIp, proxyForwardedFor) {
-    if(isTrustedProxy(socketIp) && proxyForwardedFor) {
+    if (isTrustedProxy(socketIp) && proxyForwardedFor) {
         return proxyForwardedFor;
     } else {
         return socketIp;
     }
 }
 
-app.ws('/', function(ws, req) {
+app.ws('/', function (ws, req) {
     const proxyForwardedFor = req.headers['x-forwarded-for'];
     const proxyAllowControl = req.headers['allow-control'];
     const websocketProtocol = req.headers['sec-websocket-protocol'];
@@ -225,13 +226,13 @@ app.ws('/', function(ws, req) {
 
     console.log('Client connected...');
 
-    ws.on('message', function(data) {
+    ws.on('message', function (data) {
         const cmd = data.split(' ')[0];
         const isSafe = config.safecommands.indexOf(cmd) != -1;
 
         console.log(`Request from ${socketIp}, forwarded-for: ${proxyForwardedFor}, allow-control: ${proxyAllowControl}, command: ${data}`);
 
-        if(isSafe || isWhitelisted || allowControl) {
+        if (isSafe || isWhitelisted || allowControl) {
             handleCommand(ws, data);
         } else {
             console.log('Denied');
