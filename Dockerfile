@@ -1,7 +1,9 @@
 FROM docker.io/debian:buster
 
-RUN apt-get update \
- && apt-get install -y curl gcc libsndfile1 mpc \
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list \
+ && apt-get update \
+ && apt-get install -y curl gcc gnupg2 libsndfile1 mpc \
+ && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && curl -fsSL https://deb.nodesource.com/setup_8.x | bash - \
  && apt-get install -y nodejs=8.17.0-1nodesource1
 
