@@ -239,4 +239,14 @@ app.ws('/', function(ws, req) {
     });
 });
 
+// Send ping frames to attempt to keep websocket connections alive
+// through firewalls even during idle times
+setInterval(() => {
+    expressWs.getWss().clients.forEach((client) => {
+        if (client && client.readyState === 1) {
+            client.ping();
+        }
+    });
+}, 60000);
+
 app.listen(config.http_port);
